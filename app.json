@@ -1,0 +1,36 @@
+{
+  "expo": {
+    "name": "SP-Vertretungsplan",
+    "slug": "SP-Vertretungsplan",
+    "version": "1.0.1",
+    "orientation": "portrait",
+    "icon": "./src/resources/assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./src/resources/assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./src/resources/assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.codingfactoryt.SPVertretungsplan"
+    },
+    "web": {
+      "favicon": "./src/resources/assets/icon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "9853c95f-a65e-4a1a-ba46-4baca7b87135"
+      }
+    }
+  }
+}
