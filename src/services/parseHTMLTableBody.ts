@@ -3,8 +3,8 @@ const DOMParser = require("react-native-html-parser");
 export default function parseHTMLTableBody(tableBodyHTML: string): string[][] {
     tableBodyHTML = tableBodyHTML.trim();
     if(!tableBodyHTML.startsWith("<tbody") || !tableBodyHTML.endsWith("</tbody>")) {
-        console.error("Table doesn't start with \"<tbody\" or doesn't end with \"</tbody>\"!");
-        return [[]];
+        console.log("Table doesn't start with \"<tbody\" or doesn't end with \"</tbody>\"!");
+        return [];
     }
 
     const tableData: string[][] = [];

@@ -15,14 +15,13 @@ export default function parseSubstitutionPlanHTML(vertretungsplanHTML: string) {
   );
 
   const cleanedHTML = vertretungsplanHTML.replace(firstDateVertretungen, "");
-  
+
   const secondDateVetretungen = cleanedHTML.substring(
     cleanedHTML.indexOf("<tbody>"),
     cleanedHTML.indexOf("</tbody") + "</tbody>".length + 1
   );
-
-  const firstDateEntries: ISubstitutionPlanEntry[] = parseSubstitutionPlanEntriesTable(firstDateVertretungen);
-  const secondDateEntries: ISubstitutionPlanEntry[] = parseSubstitutionPlanEntriesTable(secondDateVetretungen);
+  let firstDateEntries: ISubstitutionPlanEntry[] = parseSubstitutionPlanEntriesTable(firstDateVertretungen);
+  let secondDateEntries: ISubstitutionPlanEntry[] = parseSubstitutionPlanEntriesTable(secondDateVetretungen);
   
   const weekdays = [
     "Montag",
@@ -55,6 +54,13 @@ export default function parseSubstitutionPlanHTML(vertretungsplanHTML: string) {
     firstDate = secondDateTemp;
   }
 
+  if(firstDate === "") {
+    firstDate = "---";
+  }
+
+  if(secondDate === "") {
+    secondDate = "---";
+  }
   return {
     firstDateValues: {
       date: firstDate,
@@ -71,7 +77,6 @@ function parseSubstitutionPlanEntriesTable(vertretungsHTML: string) {
   const entries: ISubstitutionPlanEntry[] = [];
   const tableData = parseHTMLTableBody(vertretungsHTML);
   const descriptions = getDescriptions(vertretungsHTML);
-  
   tableData.forEach((substitutionEntry, index) => {
     if(substitutionEntry.length !== 1) {  //if the length of the array is one, only the error that no substitutions are available is contained in the array
       entries.push({
@@ -95,16 +100,16 @@ function parseSubstitutionPlanEntriesTable(vertretungsHTML: string) {
 
 function getDescriptions(vertretungsHTML: string) {
   const descriptions = [];
-
-  const parser = new DOMParser.DOMParser();
-  const parsed = parser.parseFromString(vertretungsHTML, "text/html");
-  const tableRows = parsed.getElementsByTagName("tr");
-  for (let i = 0; i < tableRows.length; i++) {
-    let row = tableRows[i];
-    const description = striptags(row.childNodes[1].getAttribute("title").trim());  //description is contained in the title instead of the textContent
-    
-    descriptions.push(description);
+  if(vertretungsHTML.startsWith("<") && vertretungsHTML.endsWith(">")) {
+    const parser = new DOMParser.DOMParser();
+    const parsed = parser.parseFromString(vertretungsHTML, "text/html");
+    const tableRows = parsed.getElementsByTagName("tr");
+    for (let i = 0; i < tableRows.length; i++) {
+      let row = tableRows[i];
+      const description = striptags(row.childNodes[1].getAttribute("title").trim());  //description is contained in the title instead of the textContent
+      
+      descriptions.push(description);
+    }
   }
-
   return descriptions;
 }

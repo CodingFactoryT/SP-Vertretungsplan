@@ -78,23 +78,23 @@ export default function SubstitutionPlanScreen() {
 
     if (!areSubstitutionPlanEntriesLoading) {
       setFirstDate(firstDate_);
-      setSubstitutionPlanEntriesOfFirstDate(
-        substitutionPlanEntriesOfFirstDate_
-      );
+      setSubstitutionPlanEntriesOfFirstDate([
+        ...substitutionPlanEntriesOfFirstDate_,
+      ]);
 
       setSecondDate(secondDate_);
-      setSubstitutionPlanEntriesOfSecondDate(
-        substitutionPlanEntriesOfSecondDate_
-      );
+      setSubstitutionPlanEntriesOfSecondDate([
+        ...substitutionPlanEntriesOfSecondDate_,
+      ]);
 
-      setSubstitutionPlanEntries(substitutionPlanEntriesOfFirstDate_);
+      setSubstitutionPlanEntries([...substitutionPlanEntriesOfFirstDate_]);
       setScreenLoading(false);
     }
   }, [areSubstitutionPlanEntriesLoading, isUserDataLoading]);
 
   useEffect(() => {
     getTimetable().then((retrievedTimetable) => {
-      setTimetable(retrievedTimetable);
+      setTimetable([...retrievedTimetable]);
     });
   }, []);
 
@@ -123,13 +123,13 @@ export default function SubstitutionPlanScreen() {
         substitutionPlanEntries
       );
 
-      setSubstitutionPlanEntries(filteredEntries);
+      setSubstitutionPlanEntries([...filteredEntries]);
     } else {
       storePersonalizedSubstitutionPlanEnabledInAsyncStorage("false");
       if (selectedDate === SelectedDate.FirstDate) {
-        setSubstitutionPlanEntries(substitutionPlanEntriesOfFirstDate);
+        setSubstitutionPlanEntries([...substitutionPlanEntriesOfFirstDate]);
       } else {
-        setSubstitutionPlanEntries(substitutionPlanEntriesOfSecondDate);
+        setSubstitutionPlanEntries([...substitutionPlanEntriesOfSecondDate]);
       }
     }
 
@@ -167,9 +167,11 @@ export default function SubstitutionPlanScreen() {
                   substitutionPlanEntriesOfFirstDate
                 );
 
-                setSubstitutionPlanEntries(filteredEntries);
+                setSubstitutionPlanEntries([...filteredEntries]);
               } else {
-                setSubstitutionPlanEntries(substitutionPlanEntriesOfFirstDate);
+                setSubstitutionPlanEntries([
+                  ...substitutionPlanEntriesOfFirstDate,
+                ]);
               }
               setSelectedDate(SelectedDate.FirstDate);
             }}
@@ -185,9 +187,11 @@ export default function SubstitutionPlanScreen() {
                   substitutionPlanEntriesOfSecondDate
                 );
 
-                setSubstitutionPlanEntries(filteredEntries);
+                setSubstitutionPlanEntries([...filteredEntries]);
               } else {
-                setSubstitutionPlanEntries(substitutionPlanEntriesOfSecondDate);
+                setSubstitutionPlanEntries([
+                  ...substitutionPlanEntriesOfSecondDate,
+                ]);
               }
               setSelectedDate(SelectedDate.SecondDate);
             }}
@@ -199,14 +203,13 @@ export default function SubstitutionPlanScreen() {
           {substitutionPlanEntries.length === 0 ? (
             <NoSubstitutionsEntry />
           ) : (
-            <></>
+            substitutionPlanEntries.map((item) => (
+              <SubstitutionPlanEntry
+                {...item}
+                key={item.lesson + item.originalRoom + item.originalTeacher}
+              />
+            ))
           )}
-          {substitutionPlanEntries.map((item) => (
-            <SubstitutionPlanEntry
-              {...item}
-              key={item.lesson + item.originalRoom + item.originalTeacher}
-            />
-          ))}
         </ScrollView>
         <View style={styles.bottomBar}>
           <Text style={styles.personalizedSubstitutionPlanDescription}>
