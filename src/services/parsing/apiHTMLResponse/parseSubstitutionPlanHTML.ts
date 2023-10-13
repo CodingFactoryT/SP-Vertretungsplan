@@ -39,7 +39,7 @@ export default function parseSubstitutionPlanHTML(vertretungsplanHTML: string) {
       const halfParsedDate = striptags(vertretungsplanHTML)
         .substring(index, index + weekday.length + 98)
         .replace("den", "");
-      const date = halfParsedDate.substring(0, halfParsedDate.indexOf(".") + 7).replaceAll(" ", "");
+      const date = "   " + halfParsedDate.substring(0, halfParsedDate.indexOf(".") + 8).replaceAll(" ", "");
       if (!firstDateFound) {
         firstDate = date;
         firstDateFound = true;
