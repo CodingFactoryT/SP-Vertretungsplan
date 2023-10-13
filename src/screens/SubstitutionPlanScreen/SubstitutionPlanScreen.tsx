@@ -110,7 +110,6 @@ export default function SubstitutionPlanScreen() {
         if (isPersonalizedSubstitutionPlanEnabledInAsyncStorage === "true") {
           setPersonalizedSubstitutionPlanEnabled(false);
           togglePersonalizedSubstitutionPlan();
-          console.log(timetable);
         }
       }
     );

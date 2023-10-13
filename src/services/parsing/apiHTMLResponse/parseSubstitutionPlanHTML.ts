@@ -49,6 +49,12 @@ export default function parseSubstitutionPlanHTML(vertretungsplanHTML: string) {
     }
   });
 
+  if(firstDate.includes("Montag") && secondDate.includes("Freitag")) {
+    const secondDateTemp = secondDate;
+    secondDate = firstDate;
+    firstDate = secondDateTemp;
+  }
+
   return {
     firstDateValues: {
       date: firstDate,
