@@ -143,7 +143,7 @@ export default function SubstitutionPlanScreen() {
   if (isScreenLoading) {
     return <LoadingComponent />;
   }
-  console.log(theme);
+
   const fontColor =
     theme === "light"
       ? DefaultColors.darkThemedBackground
@@ -166,7 +166,8 @@ export default function SubstitutionPlanScreen() {
               if (isPersonalizedSubstitutionPlanEnabled) {
                 const filteredEntries = personalizeSubstitutionPlanEntries(
                   timetable,
-                  substitutionPlanEntriesOfFirstDate
+                  substitutionPlanEntriesOfFirstDate,
+                  sid
                 );
 
                 setSubstitutionPlanEntries([...filteredEntries]);
@@ -186,7 +187,8 @@ export default function SubstitutionPlanScreen() {
               if (isPersonalizedSubstitutionPlanEnabled) {
                 const filteredEntries = personalizeSubstitutionPlanEntries(
                   timetable,
-                  substitutionPlanEntriesOfSecondDate
+                  substitutionPlanEntriesOfSecondDate,
+                  sid
                 );
 
                 setSubstitutionPlanEntries([...filteredEntries]);
