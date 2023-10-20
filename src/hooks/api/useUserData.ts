@@ -29,7 +29,7 @@ export function useUserData() {
             },
             withCredentials: false
         }).then(response => {   //TODO: Fehler - Diese Funktion ist für diesen Account nicht freigeschaltet
-            const userData = parseUserDataHTML(response.data);
+            const userData = parseUserDataHTML(response.data, sid);
             setUserData({
                 loginName: userData![0],
                 lastName: userData![1],
@@ -39,11 +39,17 @@ export function useUserData() {
                 class: userData![5],
                 gender: userData![6],
             });
-            setLoading(false);
-        }).catch(error => console.log(error));
-        setLoading(false);
-        
+        }).catch(error => console.log(error));        
     }, [sid]);
+
+    const [isInitialCall, setInitialCall] = useState(true);
+    useEffect(() => {
+        if(isInitialCall) {
+            setInitialCall(false);
+            return;
+        }
+        setLoading(false);
+    }, [userData]);
 
     return [userData, isLoading];
 }

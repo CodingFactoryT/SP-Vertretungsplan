@@ -5,6 +5,9 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  Linking,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import DefaultColors from "../../styles/DefaultColors";
 import ThemedScreen from "../ThemedScreen/ThemedScreen";
@@ -23,7 +26,7 @@ export default function LoginScreen({ route, navigation }) {
     DefaultColors.lightBlue
   );
   const [areTextInputsEnabled, setTextInputsEnabled] = useState(true);
-  const { theme, toggleTheme } = useContext(ThemeContext);
+  const { theme, toggleTheme, setTheme } = useContext(ThemeContext);
   const fontColor =
     theme === "light"
       ? DefaultColors.darkThemedBackground
@@ -36,8 +39,10 @@ export default function LoginScreen({ route, navigation }) {
 
   function onLoginButtonPress() {
     setTextInputsEnabled(false);
-    storeLoginName(loginNameText);
-    storeLoginPassword(passwordText);
+    if (loginNameText !== "DEMO" && passwordText !== "DEMO") {
+      storeLoginName(loginNameText);
+      storeLoginPassword(passwordText);
+    }
 
     navigation.replace("TryAutoLogin", {
       loginName: loginNameText,
@@ -73,7 +78,10 @@ export default function LoginScreen({ route, navigation }) {
 
   return (
     <ThemedScreen>
-      <View style={styles.loginView}>
+      <KeyboardAvoidingView
+        style={styles.loginView}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
         <Text style={[styles.loginText, { color: fontColor }]}>Login</Text>
         <Text style={[styles.basicText, { color: fontColor }]}>
           Kopernikusschule Freigericht
@@ -102,6 +110,47 @@ export default function LoginScreen({ route, navigation }) {
         >
           <Text>Login</Text>
         </TouchableOpacity>
+        <View
+          style={{
+            marginTop: 10,
+          }}
+        >
+          <Text
+            numberOfLines={2}
+            style={{ textAlign: "center", color: "blue" }}
+            onPress={() => {
+              setTextInputsEnabled(false);
+              navigation.replace("TryAutoLogin", {
+                loginName: "DEMO",
+                password: "DEMO",
+              });
+            }}
+          >
+            Du hast keinen Account?{"\n"}Dann schaue dir hier die Demo an!
+          </Text>
+        </View>
+      </KeyboardAvoidingView>
+      <View
+        style={{
+          backgroundColor: DefaultColors.warningRed,
+          padding: 10,
+          margin: 10,
+          borderRadius: 10,
+        }}
+      >
+        <Text style={{ textAlign: "center" }}>
+          Diese inoffizielle App repräsentiert keine Regierungsbehörde!{"\n"}
+          Sie greift lediglich auf die Daten des{" "}
+          <Text
+            onPress={() =>
+              Linking.openURL("https://start.schulportal.hessen.de")
+            }
+            style={{ color: "blue" }}
+          >
+            Schulportal Hessens
+          </Text>{" "}
+          zu.
+        </Text>
       </View>
     </ThemedScreen>
   );
@@ -110,7 +159,7 @@ export default function LoginScreen({ route, navigation }) {
 const styles = StyleSheet.create({
   basicText: {
     fontSize: 20,
-    marginBottom: "30%",
+    marginBottom: "15%",
   },
   loginButton: {
     backgroundColor: DefaultColors.lightBlue,
@@ -119,15 +168,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     height: "5%",
-    marginTop: "5%",
+    marginTop: 10,
+    marginBottom: 20,
   },
   loginView: {
     flex: 1,
     alignItems: "center",
+    marginTop: 60,
   },
   loginText: {
     fontSize: 60,
-    marginTop: "30%",
+    marginTop: "10%",
     fontFamily: "",
     marginBottom: "20%",
   },
@@ -136,8 +187,8 @@ const styles = StyleSheet.create({
     borderStyle: "solid",
     borderWidth: 3,
     width: "80%",
+    margin: 2,
     padding: 10,
-    margin: "1%",
     flexDirection: "row",
     alignItems: "center",
   },

@@ -27,7 +27,6 @@ export function useTimetable() {
             console.error(error);
         }
         
-
         return timetable;
     }
         

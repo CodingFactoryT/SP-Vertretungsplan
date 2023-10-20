@@ -5,7 +5,7 @@ import { ThemeContext } from "../contexts/Contexts";
 import DefaultColors from "../styles/DefaultColors";
 
 export default function LoadingComponent() {
-  const { theme, toggleTheme } = useContext(ThemeContext);
+  const { theme, toggleTheme, setTheme } = useContext(ThemeContext);
   const backgroundColor =
     theme === "light"
       ? DefaultColors.lightThemedBackground

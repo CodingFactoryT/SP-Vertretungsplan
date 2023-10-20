@@ -115,12 +115,14 @@ export default function SubstitutionPlanScreen() {
     );
   }, [timetable]);
 
+  const [sid] = useContext(SIDContext);
   function togglePersonalizedSubstitutionPlan() {
     if (!isPersonalizedSubstitutionPlanEnabled) {
       storePersonalizedSubstitutionPlanEnabledInAsyncStorage("true");
       const filteredEntries = personalizeSubstitutionPlanEntries(
         timetable,
-        substitutionPlanEntries
+        substitutionPlanEntries,
+        sid
       );
 
       setSubstitutionPlanEntries([...filteredEntries]);
@@ -136,12 +138,12 @@ export default function SubstitutionPlanScreen() {
     setPersonalizedSubstitutionPlanEnabled((previousState) => !previousState);
   }
 
-  const { theme, toggleTheme } = useContext(ThemeContext);
+  const { theme, toggleTheme, setTheme } = useContext(ThemeContext);
 
   if (isScreenLoading) {
     return <LoadingComponent />;
   }
-
+  console.log(theme);
   const fontColor =
     theme === "light"
       ? DefaultColors.darkThemedBackground
@@ -415,17 +417,24 @@ const styles = StyleSheet.create({
 
 function personalizeSubstitutionPlanEntries(
   timetable,
-  substitutionPlanEntries
+  substitutionPlanEntries,
+  sid
 ) {
   let teachers = new Set();
-  for (let row = 0; row < timetable.length; row++) {
-    //start at second column because first column is only description
+  if (sid === "DEMO") {
+    teachers.add("DTO");
+    teachers.add("BKL");
+    teachers.add("RSM");
+  } else {
+    for (let row = 0; row < timetable.length; row++) {
+      //start at second column because first column is only description
 
-    for (let column = 1; column < timetable[row].length; column++) {
-      const lesson = timetable[row][column];
-      if (lesson !== "") {
-        const teacher = lesson.split(" ")[2];
-        teachers.add(teacher);
+      for (let column = 1; column < timetable[row].length; column++) {
+        const lesson = timetable[row][column];
+        if (lesson !== "") {
+          const teacher = lesson.split(" ")[2];
+          teachers.add(teacher);
+        }
       }
     }
   }

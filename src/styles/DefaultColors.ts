@@ -7,4 +7,5 @@ export default {
   darkThemedBackground: "#333",
   lightThemedSecondBackground: "#ddd",
   darkThemedSecondBackground: "#666",
+  warningRed: "#FF3700",
 };

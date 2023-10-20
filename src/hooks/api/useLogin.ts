@@ -7,6 +7,10 @@ export function useLogin() {
     let returnedSID = ""; //as the normal sid is async, the sid has to be returned with the correct value in order to ensure that it is set correctly at login
 
     async function login (schoolID: number, username: string, password: string) {
+        if(username === "DEMO" && password === "DEMO") {
+            setSid("DEMO");
+            return ["", "DEMO"];
+        }
         let error = "";
 
         if(username === "" && password !== "") {    //check for incomplete user input

@@ -6,7 +6,7 @@ import { ThemeContext } from "../../contexts/Contexts";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ThemedScreen({ children }) {
-  const { theme } = useContext(ThemeContext);
+  const { theme, toggleTheme, setTheme } = useContext(ThemeContext);
   const backgroundColor =
     theme === "light"
       ? DefaultColors.lightThemedBackground

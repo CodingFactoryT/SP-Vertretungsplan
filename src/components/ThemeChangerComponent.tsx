@@ -7,15 +7,16 @@ import useAsyncStorage from "../hooks/useAsyncStorage";
 
 export default function ThemeChangerComponent(props) {
   const { getData: getTheme, storeData: storeTheme } = useAsyncStorage("Theme");
+  const { theme, toggleTheme, setTheme } = useContext(ThemeContext);
+
   useEffect(() => {
     getTheme().then((storedTheme) => {
       if (storedTheme === "dark") {
-        toggleTheme();
+        setTheme("dark");
         setSwitchState(true);
       }
     });
   }, []);
-  const { theme, toggleTheme } = useContext(ThemeContext);
   const [switchState, setSwitchState] = useState(
     theme === "light" ? false : true
   );
