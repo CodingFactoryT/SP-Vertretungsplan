@@ -23,6 +23,7 @@ function Main() {
         <Stack.Screen
           name="SubstitutionPlan"
           component={SubstitutionPlanScreen}
+          options={{ animation: "none" }}
         />
       </Stack.Navigator>
     </NavigationContainer>

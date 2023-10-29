@@ -7,7 +7,8 @@ import useAsyncStorage from "../hooks/useAsyncStorage";
 
 export default function ThemeChangerComponent(props) {
   const { getData: getTheme, storeData: storeTheme } = useAsyncStorage("Theme");
-  const { theme, toggleTheme, setTheme } = useContext(ThemeContext);
+  const { theme, toggleTheme, setTheme, backgroundColor } =
+    useContext(ThemeContext);
 
   useEffect(() => {
     getTheme().then((storedTheme) => {

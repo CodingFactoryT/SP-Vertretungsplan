@@ -19,6 +19,7 @@ import LoadingComponent from "../../components/LoadingComponent";
 import NoSubstitutionsEntry from "./components/NoSubstitutionsEntry";
 import { useTimetable } from "../../hooks/api/useTimetable";
 import useAsyncStorage from "../../hooks/useAsyncStorage";
+import { getTeachers } from "../../services/parsing/getTeachers";
 
 export default function SubstitutionPlanScreen() {
   const [isDonatePopupVisible, setDonatePopupVisible] = useState(false);
@@ -138,7 +139,8 @@ export default function SubstitutionPlanScreen() {
     setPersonalizedSubstitutionPlanEnabled((previousState) => !previousState);
   }
 
-  const { theme, toggleTheme, setTheme } = useContext(ThemeContext);
+  const { theme, toggleTheme, setTheme, backgroundColor } =
+    useContext(ThemeContext);
 
   if (isScreenLoading) {
     return <LoadingComponent />;
@@ -419,33 +421,13 @@ const styles = StyleSheet.create({
 
 function personalizeSubstitutionPlanEntries(
   timetable,
-  substitutionPlanEntries,
-  sid
+  substitutionPlanEntries: ISubstitutionPlanEntry[],
+  sid: string
 ) {
-  let teachers = new Set();
-  if (sid === "DEMO") {
-    teachers.add("DTO");
-    teachers.add("BKL");
-    teachers.add("RSM");
-  } else {
-    for (let row = 0; row < timetable.length; row++) {
-      //start at second column because first column is only description
+  const teachers = getTeachers(sid, timetable);
 
-      for (let column = 1; column < timetable[row].length; column++) {
-        const lesson = timetable[row][column];
-        if (lesson !== "") {
-          const teacher = lesson.split(" ")[2];
-          teachers.add(teacher);
-        }
-      }
-    }
-  }
-
-  let filteredEntries: ISubstitutionPlanEntry[] = [];
-  substitutionPlanEntries.forEach((element: ISubstitutionPlanEntry) => {
-    if (teachers.has(element.originalTeacher)) {
-      filteredEntries.push(element);
-    }
+  const filteredEntries = substitutionPlanEntries.filter((element) => {
+    return teachers.has(element.originalTeacher);
   });
   return filteredEntries;
 }

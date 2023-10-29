@@ -6,11 +6,8 @@ import { ThemeContext } from "../../contexts/Contexts";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ThemedScreen({ children }) {
-  const { theme, toggleTheme, setTheme } = useContext(ThemeContext);
-  const backgroundColor =
-    theme === "light"
-      ? DefaultColors.lightThemedBackground
-      : DefaultColors.darkThemedBackground;
+  const { theme, toggleTheme, setTheme, backgroundColor } =
+    useContext(ThemeContext);
 
   const statusBarStyle = theme === "light" ? "dark-content" : "light-content";
   return (

@@ -15,10 +15,13 @@ export default function TryAutoLoginScreen({ route, navigation }) {
     useAsyncStorage("LoginPassword");
 
   function handleLogin(name, password) {
-    if (sid === "") {
+    if (sid === "" || sid === "DEMO") {
       login(6013, name, password).then(([error, sid]) => {
         if (sid === "") {
           navigation.replace("Login", { error: error });
+        } else if (sid === "DEMO") {
+          navigation.replace("Login", { error: "" });
+          navigation.navigate("SubstitutionPlan");
         } else {
           navigation.replace("SubstitutionPlan");
         }
