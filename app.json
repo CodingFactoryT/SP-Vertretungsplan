@@ -2,7 +2,7 @@
   "expo": {
     "name": "SP-Vertretungsplan",
     "slug": "SP-Vertretungsplan",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./src/resources/assets/icon.png",
     "userInterfaceStyle": "light",
@@ -23,7 +23,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.codingfactoryt.SPVertretungsplan",
-      "versionCode": 2 
+      "versionCode": 3
     },
     "web": {
       "favicon": "./src/resources/assets/icon.png"
