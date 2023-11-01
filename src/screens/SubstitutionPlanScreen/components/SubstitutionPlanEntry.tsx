@@ -19,7 +19,7 @@ export default function SubstitutionPlanEntry(props: ISubstitutionPlanEntry) {
         <View style={styles.infoView}>
           <Text style={styles.infoText}>{props.type}</Text>
           <Text style={styles.infoText}>
-            {props.substitutionSubject} (
+            {props.originalSubject} (
             {props.substitutionTeacher === "" ||
             props.substitutionTeacher === props.originalTeacher
               ? ""

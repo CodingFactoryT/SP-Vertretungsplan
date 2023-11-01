@@ -62,8 +62,7 @@ export function useLogin() {
 }
 
 async function fetchSPHSessionCookie(schoolID: number, username: string, password: string) {
-    const requestBody = `user=${schoolID}.${username}&password=${password}`;
-
+    const requestBody = `user=${schoolID}.${username}&password=${encodeURIComponent(password)}`;
     const sphSessionRequest = await axios.post('https://login.schulportal.hessen.de', requestBody, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',

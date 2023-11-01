@@ -1,16 +1,22 @@
-import React from "react";
-import { View } from "react-native";
+import React, { useContext, useEffect } from "react";
 import SubstitutionPlanScreen from "../screens/SubstitutionPlanScreen/SubstitutionPlanScreen";
-import ThemedScreen from "../screens/ThemedScreen/ThemedScreen";
 import LoginScreen from "../screens/LoginScreen/LoginScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import TryAutoLoginScreen from "../screens/TryAutoLoginScreen/TryAutoLoginScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useSchoolsWithIds } from "../hooks/api/useSchoolsWithIds";
 
 const Stack = createNativeStackNavigator();
 
 function Main() {
+  /* const [schoolsWithIds, isLoading] = useSchoolsWithIds();
+
+  useEffect(() => {
+    if (!isLoading) {
+    }
+  }, [isLoading]); */
+
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>

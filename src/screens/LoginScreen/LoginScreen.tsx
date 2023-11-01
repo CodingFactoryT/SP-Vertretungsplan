@@ -94,7 +94,7 @@ export default function LoginScreen({ route, navigation }) {
             styles.textInput,
             { color: fontColor, borderColor: loginNameBorderColor },
           ]}
-          onChangeText={setLoginNameText}
+          onChangeText={(text) => setLoginNameText(text.trim())}
           value={loginNameText}
           editable={areTextInputsEnabled}
           autoCapitalize="none"
