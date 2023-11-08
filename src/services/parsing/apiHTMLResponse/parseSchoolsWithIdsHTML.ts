@@ -1,20 +1,16 @@
 import React from 'react';
 
-export default function parseSchoolsWithIdsHTML(schoolsWithIdsHTML: string) {
-    console.log(schoolsWithIdsHTML);
-    /* timetableHTML = timetableHTML.replace("<tbody>", "").replace("</tbody>", "");
-    
-    const timetableTable = timetableHTML.substring(
-        timetableHTML.indexOf("<tbody>"),
-        timetableHTML.indexOf("</tbody>") + "</tbody>".length + 1
-    );
+interface SchoolWithIDEntry {
+    schoolName: string,
+    schoolID: number
+}
 
-    const tableData = parseHTMLTableBody(timetableTable);
-    tableData.forEach((element, index) => {
-        element.forEach((data, index2) => {
-            tableData[index][index2] = data.replaceAll(new RegExp("[ \t\n]+", "g"), " ");
+export default function parseSchoolsWithIdsHTML(schoolsWithIdsJSON) {
+    const schoolsWithIDs = [].concat(...schoolsWithIdsJSON.map(schoolDistrict => {
+        return schoolDistrict.Schulen.map(school => {
+            return {schoolName: school.Name, schoolID: school.Id};
         });
-    });
-     */
-    return [];
+    }));
+    const sortedSchoolsWithIDs = schoolsWithIDs.sort((a, b) => a.schoolName.localeCompare(b.schoolName, undefined, {sensitivity: "base"}));
+    return sortedSchoolsWithIDs;
 }

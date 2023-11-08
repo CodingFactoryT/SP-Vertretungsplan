@@ -13,9 +13,9 @@ export function useSchoolsWithIds() {
     useEffect(() => {
         (async () => {
             try {
-                const response = await axios.get('https://login.schulportal.hessen.de');
+                const response = await axios.get('https://startcache.schulportal.hessen.de/exporteur.php?a=schoollist');
                 const newSchoolsWithIds = parseSchoolsWithIdsHTML(response.data);
-                setSchoolsWithIds(newSchoolsWithIds);
+                setSchoolsWithIds(newSchoolsWithIds);   //takes really long
             } catch(error) {
                 console.error(error);
             }
@@ -31,5 +31,5 @@ export function useSchoolsWithIds() {
         setLoading(false);
     }, [schoolsWithIds]);
 
-    return [schoolsWithIds, isLoading];
+    return {schoolsWithIds, isLoading};
 }

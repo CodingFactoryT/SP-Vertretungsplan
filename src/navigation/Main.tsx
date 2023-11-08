@@ -6,17 +6,11 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import TryAutoLoginScreen from "../screens/TryAutoLoginScreen/TryAutoLoginScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSchoolsWithIds } from "../hooks/api/useSchoolsWithIds";
+import SchoolSelectionScreen from "../screens/SchoolSelectionScreen/SchoolSelectionScreen";
 
 const Stack = createNativeStackNavigator();
 
-function Main() {
-  /* const [schoolsWithIds, isLoading] = useSchoolsWithIds();
-
-  useEffect(() => {
-    if (!isLoading) {
-    }
-  }, [isLoading]); */
-
+export default function Main() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -27,6 +21,10 @@ function Main() {
         />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen
+          name="SchoolSelection"
+          component={SchoolSelectionScreen}
+        />
+        <Stack.Screen
           name="SubstitutionPlan"
           component={SubstitutionPlanScreen}
           options={{ animation: "none" }}
@@ -35,5 +33,3 @@ function Main() {
     </NavigationContainer>
   );
 }
-
-export default Main;

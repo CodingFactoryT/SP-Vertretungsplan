@@ -84,9 +84,14 @@ export default function LoginScreen({ route, navigation }) {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <Text style={[styles.loginText, { color: fontColor }]}>Login</Text>
-        <Text style={[styles.basicText, { color: fontColor }]}>
-          Kopernikusschule Freigericht
-        </Text>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("SchoolSelection")}
+          style={styles.loginButton}
+        >
+          <Text style={[styles.basicText, { color: fontColor }]}>
+            Kopernikusschule Freigericht
+          </Text>
+        </TouchableOpacity>
         <TextInput
           placeholder="Nutzername"
           placeholderTextColor={fontColor}
