@@ -162,48 +162,52 @@ export default function SubstitutionPlanScreen() {
           {class_}-Vertretungsplan
         </Text>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => {
-              if (isPersonalizedSubstitutionPlanEnabled) {
-                const filteredEntries = personalizeSubstitutionPlanEntries(
-                  timetable,
-                  substitutionPlanEntriesOfFirstDate,
-                  sid
-                );
+          {firstDate !== "---" && (
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                if (isPersonalizedSubstitutionPlanEnabled) {
+                  const filteredEntries = personalizeSubstitutionPlanEntries(
+                    timetable,
+                    substitutionPlanEntriesOfFirstDate,
+                    sid
+                  );
 
-                setSubstitutionPlanEntries([...filteredEntries]);
-              } else {
-                setSubstitutionPlanEntries([
-                  ...substitutionPlanEntriesOfFirstDate,
-                ]);
-              }
-              setSelectedDate(SelectedDate.FirstDate);
-            }}
-          >
-            <Text>{firstDate}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => {
-              if (isPersonalizedSubstitutionPlanEnabled) {
-                const filteredEntries = personalizeSubstitutionPlanEntries(
-                  timetable,
-                  substitutionPlanEntriesOfSecondDate,
-                  sid
-                );
+                  setSubstitutionPlanEntries([...filteredEntries]);
+                } else {
+                  setSubstitutionPlanEntries([
+                    ...substitutionPlanEntriesOfFirstDate,
+                  ]);
+                }
+                setSelectedDate(SelectedDate.FirstDate);
+              }}
+            >
+              <Text>{firstDate}</Text>
+            </TouchableOpacity>
+          )}
+          {secondDate !== "---" && (
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                if (isPersonalizedSubstitutionPlanEnabled) {
+                  const filteredEntries = personalizeSubstitutionPlanEntries(
+                    timetable,
+                    substitutionPlanEntriesOfSecondDate,
+                    sid
+                  );
 
-                setSubstitutionPlanEntries([...filteredEntries]);
-              } else {
-                setSubstitutionPlanEntries([
-                  ...substitutionPlanEntriesOfSecondDate,
-                ]);
-              }
-              setSelectedDate(SelectedDate.SecondDate);
-            }}
-          >
-            <Text>{secondDate}</Text>
-          </TouchableOpacity>
+                  setSubstitutionPlanEntries([...filteredEntries]);
+                } else {
+                  setSubstitutionPlanEntries([
+                    ...substitutionPlanEntriesOfSecondDate,
+                  ]);
+                }
+                setSelectedDate(SelectedDate.SecondDate);
+              }}
+            >
+              <Text>{secondDate}</Text>
+            </TouchableOpacity>
+          )}
         </View>
         <ScrollView>
           {substitutionPlanEntries.length === 0 ? (

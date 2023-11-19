@@ -5,8 +5,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import TryAutoLoginScreen from "../screens/TryAutoLoginScreen/TryAutoLoginScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useSchoolsWithIds } from "../hooks/api/useSchoolsWithIds";
-import SchoolSelectionScreen from "../screens/SchoolSelectionScreen/SchoolSelectionScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -20,10 +18,6 @@ export default function Main() {
           initialParams={{ loginName: "", password: "" }}
         />
         <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen
-          name="SchoolSelection"
-          component={SchoolSelectionScreen}
-        />
         <Stack.Screen
           name="SubstitutionPlan"
           component={SubstitutionPlanScreen}

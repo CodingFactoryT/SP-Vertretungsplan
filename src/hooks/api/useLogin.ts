@@ -39,7 +39,6 @@ export function useLogin() {
                     const newSid = trimmedToSIDSetCookies.substring(0, trimmedToSIDSetCookies.indexOf(";"))
                     setSid(newSid); //set the sid the Schulportal server responded with. The user is logged in now
                     returnedSID = newSid;
-                    console.log("Logged in: " + newSid);
                 }
                 catch(err: any) {
                     error = err;

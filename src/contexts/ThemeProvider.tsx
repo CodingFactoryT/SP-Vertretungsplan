@@ -17,7 +17,6 @@ export function ThemeProvider({ children }) {
         ? DefaultColors.darkThemedBackground
         : DefaultColors.lightThemedBackground
     );
-    console.log(backgroundColor);
   }
 
   function setTheme(value: string) {

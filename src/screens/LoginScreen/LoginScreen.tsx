@@ -14,6 +14,8 @@ import ThemedScreen from "../ThemedScreen/ThemedScreen";
 import { ThemeContext } from "../../contexts/Contexts";
 import PasswordInputToggableVisibilityComponent from "./components/PasswordInputToggableVisibilityComponent";
 import useAsyncStorage from "../../hooks/useAsyncStorage";
+import { Dropdown } from "react-native-element-dropdown";
+import { useSchoolsWithIds } from "../../hooks/api/useSchoolsWithIds";
 
 export default function LoginScreen({ route, navigation }) {
   const { error } = route.params;
@@ -77,6 +79,31 @@ export default function LoginScreen({ route, navigation }) {
     }
   }, [error]);
 
+  const [data, setData] = useState();
+  const { schoolsWithIds, isLoading } = useSchoolsWithIds();
+  const [selectedSchoolIndex, setSelectedSchoolIndex] = useState();
+
+  useEffect(() => {
+    const newData = schoolsWithIds.map((item, index) => {
+      const label = item.schoolName + "(" + item.schoolDistrict + ")";
+      return {
+        schoolDistrict: item.schoolDistrict,
+        schoolName: item.schoolName,
+        label: label,
+        schoolId: item.schoolID,
+        index: index,
+      };
+    });
+
+    setData(newData);
+  }, [schoolsWithIds]);
+
+  useEffect(() => {
+    if (data) {
+      console.log(data[selectedSchoolIndex]);
+    }
+  }, [selectedSchoolIndex]);
+
   return (
     <ThemedScreen>
       <KeyboardAvoidingView
@@ -84,14 +111,19 @@ export default function LoginScreen({ route, navigation }) {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <Text style={[styles.loginText, { color: fontColor }]}>Login</Text>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("SchoolSelection")}
-          style={styles.loginButton}
-        >
-          <Text style={[styles.basicText, { color: fontColor }]}>
-            Kopernikusschule Freigericht
-          </Text>
-        </TouchableOpacity>
+        <Dropdown
+          style={styles.textInput}
+          data={data}
+          search
+          maxHeight={300}
+          labelField="label"
+          placeholder={"Schule auswählen"}
+          searchPlaceholder="Suchen..."
+          value={selectedSchoolIndex}
+          onChange={(item) => {
+            setSelectedSchoolIndex(item.index);
+          }}
+        />
         <TextInput
           placeholder="Nutzername"
           placeholderTextColor={fontColor}

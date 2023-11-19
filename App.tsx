@@ -5,6 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SchoolsWithIdsProvider } from "./src/contexts/SchoolsWithIdsProvider";
 
 export default function App() {
+  //AsyncStorage.clear();
   return (
     <ThemeProvider>
       <SchoolsWithIdsProvider>
