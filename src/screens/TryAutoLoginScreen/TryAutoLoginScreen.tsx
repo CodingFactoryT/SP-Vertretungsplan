@@ -9,23 +9,35 @@ export default function TryAutoLoginScreen({ route, navigation }) {
   const [login] = useLogin();
   const [sid] = useContext(SIDContext);
 
+  const { getData: getSchoolID, storeData: storeSchoolID } =
+    useAsyncStorage("SchoolID");
   const { getData: getLoginName, storeData: storeLoginName } =
     useAsyncStorage("LoginName");
   const { getData: getLoginPassword, storeData: storeLoginPassword } =
     useAsyncStorage("LoginPassword");
 
-  function handleLogin(name, password) {
+  function handleLogin(schoolID, name, password) {
     if (sid === "" || sid === "DEMO") {
-      login(6013, name, password).then(([error, sid]) => {
-        if (sid === "") {
-          navigation.replace("Login", { error: error });
-        } else if (sid === "DEMO") {
-          navigation.replace("Login", { error: "" });
-          navigation.navigate("SubstitutionPlan");
-        } else {
-          navigation.replace("SubstitutionPlan");
+      login(schoolID, name, password).then(
+        ([schoolIDError, loginNameError, passwordError, sid]) => {
+          if (sid === "") {
+            navigation.replace("Login", {
+              schoolIDError: schoolIDError,
+              loginNameError: loginNameError,
+              passwordError: passwordError,
+            });
+          } else if (sid === "DEMO") {
+            navigation.replace("Login", {
+              schoolIDError: -1,
+              loginNameError: -1,
+              passwordError: -1,
+            });
+            navigation.navigate("SubstitutionPlan");
+          } else {
+            navigation.replace("SubstitutionPlan");
+          }
         }
-      });
+      );
     } else {
       navigation.replace("SubstitutionPlan");
     }
@@ -35,13 +47,13 @@ export default function TryAutoLoginScreen({ route, navigation }) {
     if (loginData.loginName === "" && loginData.password === "") {
       //if its the initial call
 
-      Promise.all([getLoginName(), getLoginPassword()]).then(
-        ([loginName, loginPassword]) => {
-          handleLogin(loginName, loginPassword);
+      Promise.all([getSchoolID(), getLoginName(), getLoginPassword()]).then(
+        ([schoolID, loginName, loginPassword]) => {
+          handleLogin(schoolID, loginName, loginPassword);
         }
       );
     } else {
-      handleLogin(loginData.loginName, loginData.password);
+      handleLogin(loginData.schoolID, loginData.loginName, loginData.password);
     }
   }, []);
 

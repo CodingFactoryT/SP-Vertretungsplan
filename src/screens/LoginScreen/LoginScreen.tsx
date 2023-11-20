@@ -18,7 +18,10 @@ import { Dropdown } from "react-native-element-dropdown";
 import { useSchoolsWithIds } from "../../hooks/api/useSchoolsWithIds";
 
 export default function LoginScreen({ route, navigation }) {
-  const { error } = route.params;
+  const { schoolIDError, loginNameError, passwordError } = route.params;
+  const [schoolIDBorderColor, setSchoolIDBorderColor] = useState(
+    DefaultColors.lightBlue
+  );
   const [loginNameText, setLoginNameText] = useState("");
   const [loginNameBorderColor, setLoginNameBorderColor] = useState(
     DefaultColors.lightBlue
@@ -35,57 +38,60 @@ export default function LoginScreen({ route, navigation }) {
       ? DefaultColors.darkThemedBackground
       : DefaultColors.lightThemedBackground;
 
+  const { getData: getSchoolID, storeData: storeSchoolID } =
+    useAsyncStorage("SchoolID");
   const { getData: getLoginName, storeData: storeLoginName } =
     useAsyncStorage("LoginName");
   const { getData: getLoginPassword, storeData: storeLoginPassword } =
     useAsyncStorage("LoginPassword");
 
+  const [data, setData] = useState();
+  const { schoolsWithIds, isLoading } = useSchoolsWithIds();
+  const [selectedSchoolIndex, setSelectedSchoolIndex] = useState(-1);
+
   function onLoginButtonPress() {
     setTextInputsEnabled(false);
+    const schoolID =
+      selectedSchoolIndex === -1 ? "" : data[selectedSchoolIndex].schoolId;
+
     if (loginNameText !== "DEMO" && passwordText !== "DEMO") {
+      storeSchoolID(schoolID);
       storeLoginName(loginNameText);
       storeLoginPassword(passwordText);
     }
 
     navigation.replace("TryAutoLogin", {
+      schoolID: schoolID,
       loginName: loginNameText,
       password: passwordText,
     });
   }
 
   useEffect(() => {
-    if (error !== "") {
-      switch (
-        error //provide user feedback for the TextInputs
-      ) {
-        case "Missing Username!":
-          setLoginNameBorderColor(DefaultColors.errorRed);
-          setPasswordBorderColor(DefaultColors.lightBlue);
-          break;
-        case "Missing Password!":
-          setLoginNameBorderColor(DefaultColors.lightBlue);
-          setPasswordBorderColor(DefaultColors.errorRed);
-          break;
-        case "Missing Username and Password!":
-        case "Invalid SchoolID, Username or Password!":
-          setLoginNameBorderColor(DefaultColors.errorRed);
-          setPasswordBorderColor(DefaultColors.errorRed);
-          break;
-        default:
-          console.error("Login Error unknown: " + error);
-          break;
-      }
-      setTextInputsEnabled(true);
+    if (schoolIDError === 0) {
+      setSchoolIDBorderColor(DefaultColors.lightBlue);
+    } else {
+      setSchoolIDBorderColor(DefaultColors.errorRed);
     }
-  }, [error]);
 
-  const [data, setData] = useState();
-  const { schoolsWithIds, isLoading } = useSchoolsWithIds();
-  const [selectedSchoolIndex, setSelectedSchoolIndex] = useState();
+    if (loginNameError === 0) {
+      setLoginNameBorderColor(DefaultColors.lightBlue);
+    } else {
+      setLoginNameBorderColor(DefaultColors.errorRed);
+    }
+
+    if (passwordError === 0) {
+      setPasswordBorderColor(DefaultColors.lightBlue);
+    } else {
+      setPasswordBorderColor(DefaultColors.errorRed);
+    }
+
+    setTextInputsEnabled(true);
+  }, [schoolIDError, loginNameError, passwordError]);
 
   useEffect(() => {
     const newData = schoolsWithIds.map((item, index) => {
-      const label = item.schoolName + "(" + item.schoolDistrict + ")";
+      const label = item.schoolName + " (" + item.schoolDistrict + ")";
       return {
         schoolDistrict: item.schoolDistrict,
         schoolName: item.schoolName,
@@ -112,15 +118,18 @@ export default function LoginScreen({ route, navigation }) {
       >
         <Text style={[styles.loginText, { color: fontColor }]}>Login</Text>
         <Dropdown
-          style={styles.textInput}
+          style={[styles.dropdown, { borderColor: schoolIDBorderColor }]}
           data={data}
           search
           maxHeight={300}
-          labelField="label"
+          labelField={"label"}
           placeholder={"Schule auswählen"}
-          searchPlaceholder="Suchen..."
-          value={selectedSchoolIndex}
+          selectedTextStyle={{ color: fontColor }}
+          placeholderStyle={{ color: fontColor }}
+          searchPlaceholder={"Suchen..."}
+          value={""}
           onChange={(item) => {
+            console.log("Changed");
             setSelectedSchoolIndex(item.index);
           }}
         />
@@ -159,6 +168,7 @@ export default function LoginScreen({ route, navigation }) {
             onPress={() => {
               setTextInputsEnabled(false);
               navigation.replace("TryAutoLogin", {
+                schoolID: -1,
                 loginName: "DEMO",
                 password: "DEMO",
               });
@@ -195,6 +205,15 @@ export default function LoginScreen({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
+  dropdown: {
+    borderRadius: 10,
+    borderStyle: "solid",
+    borderWidth: 3,
+    width: "80%",
+    margin: 2,
+    padding: 10,
+    paddingVertical: 20,
+  },
   basicText: {
     fontSize: 20,
     marginBottom: "15%",

@@ -6,24 +6,28 @@ export function useLogin() {
     const [sid, setSid] = useContext(SIDContext);
     let returnedSID = ""; //as the normal sid is async, the sid has to be returned with the correct value in order to ensure that it is set correctly at login
 
-    async function login (schoolID: number, username: string, password: string) {
+    async function login (schoolID: string, username: string, password: string) {
+        let schoolIDError = 0;
+        let usernameError = 0;
+        let passwordError = 0;
+
         if(username === "DEMO" && password === "DEMO") {
             setSid("DEMO");
-            return ["", "DEMO"];
+            return [-1, -1, -1, "DEMO"];
         }
-        let error = "";
 
-        if(username === "" && password !== "") {    //check for incomplete user input
-            error = "Missing Username!";
-            return [error, ""];
+        if(username === "") {    //check for incomplete user input
+            usernameError = 1;
         }
-        if(username !== "" && password === "") {
-            error = "Missing Password!";
-            return [error, ""]
+        if(password === "") {
+            passwordError = 1;
         }
-        if(username === "" && password === "") {
-            error = "Missing Username and Password!";
-            return [error, ""]
+        if(schoolID === "") {
+            schoolIDError = 1;
+        }
+
+        if(schoolIDError !== 0 || usernameError !== 0 || passwordError !== 0) {
+            return [schoolIDError, usernameError, passwordError, ""];
         }
 
         try {
@@ -41,26 +45,32 @@ export function useLogin() {
                     returnedSID = newSid;
                 }
                 catch(err: any) {
-                    error = err;
+                    console.log(err);
                 }
             } else {       
-                error = "SPH-Session Cookie was not properly set!";
+                schoolIDError = 4;
+                usernameError = 4;
+                passwordError = 4;
             }
         } catch(err: any) {
             if(err.toString() === "AxiosError: Request failed with status code 401") {
-                error = "Invalid SchoolID, Username or Password!";
+                schoolIDError = 2;
+                usernameError = 2;
+                passwordError = 2;
             } else {
-                error = err;
+                schoolIDError = 3;
+                usernameError = 3;
+                passwordError = 3;
             }
         }
 
-        return [error, returnedSID];
+        return [schoolIDError, usernameError, passwordError, returnedSID];
     }
 
     return [ login ];
 }
 
-async function fetchSPHSessionCookie(schoolID: number, username: string, password: string) {
+async function fetchSPHSessionCookie(schoolID: string, username: string, password: string) {
     const requestBody = `user=${schoolID}.${username}&password=${encodeURIComponent(password)}`;
     const sphSessionRequest = await axios.post('https://login.schulportal.hessen.de', requestBody, {
         headers: {

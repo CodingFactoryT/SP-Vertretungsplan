@@ -15,7 +15,7 @@ export default function Main() {
         <Stack.Screen
           name="TryAutoLogin"
           component={TryAutoLoginScreen}
-          initialParams={{ loginName: "", password: "" }}
+          initialParams={{ schoolID: -1, loginName: "", password: "" }}
         />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen
