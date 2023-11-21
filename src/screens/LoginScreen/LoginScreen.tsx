@@ -104,12 +104,6 @@ export default function LoginScreen({ route, navigation }) {
     setData(newData);
   }, [schoolsWithIds]);
 
-  useEffect(() => {
-    if (data) {
-      console.log(data[selectedSchoolIndex]);
-    }
-  }, [selectedSchoolIndex]);
-
   return (
     <ThemedScreen>
       <KeyboardAvoidingView
@@ -124,12 +118,14 @@ export default function LoginScreen({ route, navigation }) {
           maxHeight={300}
           labelField={"label"}
           placeholder={"Schule auswählen"}
-          selectedTextStyle={{ color: fontColor }}
+          selectedTextStyle={{
+            color: fontColor,
+            marginVertical: -10,
+          }}
           placeholderStyle={{ color: fontColor }}
           searchPlaceholder={"Suchen..."}
           value={""}
           onChange={(item) => {
-            console.log("Changed");
             setSelectedSchoolIndex(item.index);
           }}
         />
