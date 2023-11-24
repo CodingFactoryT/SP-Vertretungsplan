@@ -3,8 +3,14 @@ import axios from 'axios';
 import parseSchoolsWithIdsHTML from '../../services/parsing/apiHTMLResponse/parseSchoolsWithIdsHTML';
 
 export function useSchoolsWithIds() {
-    const [schoolsWithIds, setSchoolsWithIds] = useState([]);
-    
+    type SchoolEntry = {
+        schoolDistrict: string,
+        schoolName: string,
+        schoolID: string
+    }
+
+    const [schoolsWithIds, setSchoolsWithIds] = useState<SchoolEntry[]>([]);
+
     const [isLoading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -12,7 +18,7 @@ export function useSchoolsWithIds() {
             try {
                 const response = await axios.get('https://startcache.schulportal.hessen.de/exporteur.php?a=schoollist');
                 const newSchoolsWithIds = parseSchoolsWithIdsHTML(response.data);
-                setSchoolsWithIds(newSchoolsWithIds);   //takes really long
+                setSchoolsWithIds(newSchoolsWithIds);
             } catch(error) {
                 console.error(error);
             }

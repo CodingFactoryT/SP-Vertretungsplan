@@ -1,15 +1,15 @@
-import { View } from "react-native";
+import { DimensionValue, View } from "react-native";
 import Svg, { Path, Rect } from "react-native-svg";
 
 type SquaredIconObject = {
-  width: string | number;
+  width: DimensionValue | undefined;
   color: string;
   viewBox: string;
   path: string;
 };
 
 type IconObject = {
-  width: string | number;
+  width: DimensionValue | undefined;
   color: string;
 };
 

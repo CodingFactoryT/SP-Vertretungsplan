@@ -4,7 +4,7 @@ import DefaultColors from "../styles/DefaultColors";
 
 type Theme = "light" | "dark";
 
-export function ThemeProvider({ children }) {
+export function ThemeProvider({ children }: any) {
   const [theme, setStateTheme] = useState<Theme>("light");
   const [backgroundColor, setBackgroundColor] = useState(
     DefaultColors.lightThemedBackground
@@ -24,7 +24,7 @@ export function ThemeProvider({ children }) {
     );
   }, [theme]);
 
-  function setTheme(newTheme: theme) {
+  function setTheme(newTheme: Theme) {
     setStateTheme(newTheme);
   }
 
