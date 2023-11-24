@@ -1,42 +1,47 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ThemeContext } from "./Contexts";
 import DefaultColors from "../styles/DefaultColors";
 
+type theme = "light" | "dark";
+
 export function ThemeProvider({ children }) {
-  const [theme, setStateTheme] = useState("light");
+  const [theme, setStateTheme] = useState<theme>("light");
   const [backgroundColor, setBackgroundColor] = useState(
     DefaultColors.lightThemedBackground
   );
+  const [fontColor, setFontColor] = useState(DefaultColors.lightThemedFont);
 
-  function toggleTheme() {
-    setStateTheme((previousState) =>
-      previousState === "light" ? "dark" : "light"
-    );
+  useEffect(() => {
     setBackgroundColor(
       theme === "light"
-        ? DefaultColors.darkThemedBackground
-        : DefaultColors.lightThemedBackground
+        ? DefaultColors.lightThemedBackground
+        : DefaultColors.darkThemedBackground
     );
+    setFontColor(
+      theme === "light"
+        ? DefaultColors.lightThemedFont
+        : DefaultColors.darkThemedFont
+    );
+  }, [theme]);
+
+  function setTheme(newTheme: theme) {
+    setStateTheme(newTheme);
   }
 
-  function setTheme(value: string) {
-    if (value !== "light" && value !== "dark") {
-      console.error("Theme not supported!: " + value);
-      return;
-    }
-
-    setStateTheme(value);
-
-    const newBackgroundColor =
-      value === "light"
-        ? DefaultColors.lightThemedBackground
-        : DefaultColors.darkThemedBackground;
-    setBackgroundColor(newBackgroundColor);
+  function toggleTheme() {
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
   }
 
   return (
     <ThemeContext.Provider
-      value={{ theme, toggleTheme, setTheme, backgroundColor }}
+      value={{
+        theme,
+        toggleTheme,
+        setTheme,
+        backgroundColor,
+        fontColor,
+      }}
     >
       {children}
     </ThemeContext.Provider>

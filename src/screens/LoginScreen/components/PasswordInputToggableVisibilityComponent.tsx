@@ -14,11 +14,7 @@ export default function PasswordInputToggableVisibilityComponent({
   isEnabled,
 }) {
   const [isPasswordVisible, setPasswordVisible] = useState(false);
-  const { theme } = useContext(ThemeContext);
-  const fontColor =
-    theme === "light"
-      ? DefaultColors.darkThemedBackground
-      : DefaultColors.lightThemedBackground;
+  const { fontColor } = useContext(ThemeContext);
 
   const [visibilityIcon, setVisibilityIcon] = useState(
     <VisibilityOffIcon width={"100%"} color={fontColor} />

@@ -139,21 +139,17 @@ export default function SubstitutionPlanScreen() {
     setPersonalizedSubstitutionPlanEnabled((previousState) => !previousState);
   }
 
-  const { theme } = useContext(ThemeContext);
-
-  if (isScreenLoading) {
-    return <LoadingComponent />;
-  }
-
-  const fontColor =
-    theme === "light"
-      ? DefaultColors.darkThemedBackground
-      : DefaultColors.lightThemedBackground;
+  const { theme, fontColor } = useContext(ThemeContext);
 
   const modalBackgroundColor =
     theme === "light"
       ? DefaultColors.lightThemedSecondBackground
       : DefaultColors.darkThemedSecondBackground;
+
+  if (isScreenLoading) {
+    return <LoadingComponent />;
+  }
+
   return (
     <ThemedScreen>
       <View style={styles.container}>

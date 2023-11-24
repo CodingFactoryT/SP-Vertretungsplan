@@ -31,11 +31,7 @@ export default function LoginScreen({ route, navigation }) {
     DefaultColors.lightBlue
   );
   const [areTextInputsEnabled, setTextInputsEnabled] = useState(true);
-  const { theme } = useContext(ThemeContext);
-  const fontColor =
-    theme === "light"
-      ? DefaultColors.darkThemedBackground
-      : DefaultColors.lightThemedBackground;
+  const { fontColor } = useContext(ThemeContext);
 
   const { getData: getSchoolID, storeData: storeSchoolID } =
     useAsyncStorage("SchoolID");
