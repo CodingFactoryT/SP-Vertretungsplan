@@ -42,8 +42,8 @@ export default function LoginScreen({ route, navigation }) {
     useAsyncStorage("SchoolID");
   const { getData: getUsername, storeData: storeUsername } =
     useAsyncStorage("Username");
-  const { getData: getLoginPassword, storeData: storeLoginPassword } =
-    useAsyncStorage("LoginPassword");
+  const { getData: getPassword, storeData: storePassword } =
+    useAsyncStorage("Password");
 
   const [data, setData] = useState();
   const { schoolsWithIds, isLoading } = useSchoolsWithIds();
@@ -57,7 +57,7 @@ export default function LoginScreen({ route, navigation }) {
     if (usernameText !== "DEMO" && passwordText !== "DEMO") {
       storeSchoolID(schoolID);
       storeUsername(usernameText);
-      storeLoginPassword(passwordText);
+      storePassword(passwordText);
     }
 
     navigation.replace("TryAutoLogin", {

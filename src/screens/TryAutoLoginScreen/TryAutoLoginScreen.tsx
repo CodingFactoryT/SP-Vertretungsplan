@@ -13,8 +13,8 @@ export default function TryAutoLoginScreen({ route, navigation }) {
     useAsyncStorage("SchoolID");
   const { getData: getUsername, storeData: storeUsername } =
     useAsyncStorage("Username");
-  const { getData: getLoginPassword, storeData: storeLoginPassword } =
-    useAsyncStorage("LoginPassword");
+  const { getData: getPassword, storeData: storePassword } =
+    useAsyncStorage("Password");
 
   function handleLogin(schoolID, name, password) {
     if (sid === "" || sid === "DEMO") {
@@ -47,9 +47,9 @@ export default function TryAutoLoginScreen({ route, navigation }) {
     if (loginData.username === "" && loginData.password === "") {
       //if its the initial call
 
-      Promise.all([getSchoolID(), getUsername(), getLoginPassword()]).then(
-        ([schoolID, username, loginPassword]) => {
-          handleLogin(schoolID, username, loginPassword);
+      Promise.all([getSchoolID(), getUsername(), getPassword()]).then(
+        ([schoolID, username, password]) => {
+          handleLogin(schoolID, username, password);
         }
       );
     } else {
