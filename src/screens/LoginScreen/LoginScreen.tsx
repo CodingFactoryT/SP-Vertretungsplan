@@ -31,8 +31,7 @@ export default function LoginScreen({ route, navigation }) {
     DefaultColors.lightBlue
   );
   const [areTextInputsEnabled, setTextInputsEnabled] = useState(true);
-  const { theme, toggleTheme, setTheme, backgroundColor } =
-    useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
   const fontColor =
     theme === "light"
       ? DefaultColors.darkThemedBackground

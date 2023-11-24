@@ -7,7 +7,7 @@ import useAsyncStorage from "../../hooks/useAsyncStorage";
 export default function TryAutoLoginScreen({ route, navigation }) {
   const loginData = route.params;
   const [login] = useLogin();
-  const [sid] = useContext(SIDContext);
+  const { sid } = useContext(SIDContext);
 
   const { getData: getSchoolID, storeData: storeSchoolID } =
     useAsyncStorage("SchoolID");

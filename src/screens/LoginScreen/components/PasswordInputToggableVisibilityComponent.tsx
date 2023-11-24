@@ -14,8 +14,7 @@ export default function PasswordInputToggableVisibilityComponent({
   isEnabled,
 }) {
   const [isPasswordVisible, setPasswordVisible] = useState(false);
-  const { theme, toggleTheme, setTheme, backgroundColor } =
-    useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
   const fontColor =
     theme === "light"
       ? DefaultColors.darkThemedBackground

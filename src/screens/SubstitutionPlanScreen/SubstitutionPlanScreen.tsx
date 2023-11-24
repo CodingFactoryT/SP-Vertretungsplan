@@ -116,7 +116,7 @@ export default function SubstitutionPlanScreen() {
     );
   }, [timetable]);
 
-  const [sid] = useContext(SIDContext);
+  const { sid } = useContext(SIDContext);
   function togglePersonalizedSubstitutionPlan() {
     if (!isPersonalizedSubstitutionPlanEnabled) {
       storePersonalizedSubstitutionPlanEnabledInAsyncStorage("true");
@@ -139,8 +139,7 @@ export default function SubstitutionPlanScreen() {
     setPersonalizedSubstitutionPlanEnabled((previousState) => !previousState);
   }
 
-  const { theme, toggleTheme, setTheme, backgroundColor } =
-    useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
 
   if (isScreenLoading) {
     return <LoadingComponent />;

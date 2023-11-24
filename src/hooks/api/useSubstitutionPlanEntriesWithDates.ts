@@ -11,7 +11,7 @@ export function useSubstitutionPlanEntriesWithDates() {
     const [substitutionPlanEntriesOfFirstDate, setSubstitutionPlanEntriesOfFirstDate] = useState<ISubstitutionPlanEntry[]>([]);
     const [substitutionPlanEntriesOfSecondDate, setSubstitutionPlanEntriesOfSecondDate] = useState<ISubstitutionPlanEntry[]>([]);
     const [isLoading, setLoading] = useState(true);
-    const [sid] = useContext(SIDContext);
+    const { sid } = useContext(SIDContext);
     
     useEffect(() => {
         if(sid === "DEMO") {

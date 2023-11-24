@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
-import IUserData from '../../interfaces/SchulportalData/IUserData';
 import axios from 'axios';
 import parseTimetableHTML from '../../services/parsing/apiHTMLResponse/parseTimetableHTML';
 import { SIDContext } from '../../contexts/Contexts';
 
 export function useTimetable() {
-    const [sid] = useContext(SIDContext);
+    const { sid } = useContext(SIDContext);
 
     async function getTimetable() {
         let timetable = {};

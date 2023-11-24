@@ -1,8 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react';
-import IUserData from '../../interfaces/SchulportalData/IUserData';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import parseUserDataHTML from '../../services/parsing/apiHTMLResponse/parseUserDataHTML';
-import { SIDContext } from '../../contexts/Contexts';
 import parseSchoolsWithIdsHTML from '../../services/parsing/apiHTMLResponse/parseSchoolsWithIdsHTML';
 
 export function useSchoolsWithIds() {

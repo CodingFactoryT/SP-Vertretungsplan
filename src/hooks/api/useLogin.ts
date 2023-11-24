@@ -3,7 +3,7 @@ import axios from "axios";
 import { SIDContext } from '../../contexts/Contexts';
 
 export function useLogin() {
-    const [sid, setSid] = useContext(SIDContext);
+    const { setSid } = useContext(SIDContext);
     let returnedSID = ""; //as the normal sid is async, the sid has to be returned with the correct value in order to ensure that it is set correctly at login
 
     async function login (schoolID: string, username: string, password: string) {

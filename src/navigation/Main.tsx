@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React from "react";
 import SubstitutionPlanScreen from "../screens/SubstitutionPlanScreen/SubstitutionPlanScreen";
 import LoginScreen from "../screens/LoginScreen/LoginScreen";
 import { NavigationContainer } from "@react-navigation/native";

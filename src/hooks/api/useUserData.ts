@@ -5,7 +5,7 @@ import parseUserDataHTML from '../../services/parsing/apiHTMLResponse/parseUserD
 import { SIDContext } from '../../contexts/Contexts';
 
 export function useUserData() {
-    const [sid] = useContext(SIDContext);
+    const { sid } = useContext(SIDContext);
 
     const [userData, setUserData] = useState({
         username: "",

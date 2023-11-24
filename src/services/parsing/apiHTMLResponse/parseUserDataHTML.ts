@@ -1,9 +1,7 @@
-import { useContext } from "react"
-import { SIDContext } from "../../../contexts/Contexts";
 import parseHTMLTableBody from "../../parseHTMLTableBody";
 import DemoProvider from "../../../DataProvider/DemoProvider";
 
-export default function parseUserDataHTML(userDataHTML: string, sid) {
+export default function parseUserDataHTML(userDataHTML: string, sid: string) {
     const userDataTable = userDataHTML.substring(
         userDataHTML.indexOf("<tbody>"),
         userDataHTML.indexOf("</tbody>") + "</tbody>".length + 1
