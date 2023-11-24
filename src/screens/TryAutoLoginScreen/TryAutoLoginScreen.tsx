@@ -11,25 +11,25 @@ export default function TryAutoLoginScreen({ route, navigation }) {
 
   const { getData: getSchoolID, storeData: storeSchoolID } =
     useAsyncStorage("SchoolID");
-  const { getData: getLoginName, storeData: storeLoginName } =
-    useAsyncStorage("LoginName");
+  const { getData: getUsername, storeData: storeUsername } =
+    useAsyncStorage("Username");
   const { getData: getLoginPassword, storeData: storeLoginPassword } =
     useAsyncStorage("LoginPassword");
 
   function handleLogin(schoolID, name, password) {
     if (sid === "" || sid === "DEMO") {
       login(schoolID, name, password).then(
-        ([schoolIDError, loginNameError, passwordError, sid]) => {
+        ([schoolIDError, usernameError, passwordError, sid]) => {
           if (sid === "") {
             navigation.replace("Login", {
               schoolIDError: schoolIDError,
-              loginNameError: loginNameError,
+              usernameError: usernameError,
               passwordError: passwordError,
             });
           } else if (sid === "DEMO") {
             navigation.replace("Login", {
               schoolIDError: -1,
-              loginNameError: -1,
+              usernameError: -1,
               passwordError: -1,
             });
             navigation.navigate("SubstitutionPlan");
@@ -44,16 +44,16 @@ export default function TryAutoLoginScreen({ route, navigation }) {
   }
 
   useEffect(() => {
-    if (loginData.loginName === "" && loginData.password === "") {
+    if (loginData.username === "" && loginData.password === "") {
       //if its the initial call
 
-      Promise.all([getSchoolID(), getLoginName(), getLoginPassword()]).then(
-        ([schoolID, loginName, loginPassword]) => {
-          handleLogin(schoolID, loginName, loginPassword);
+      Promise.all([getSchoolID(), getUsername(), getLoginPassword()]).then(
+        ([schoolID, username, loginPassword]) => {
+          handleLogin(schoolID, username, loginPassword);
         }
       );
     } else {
-      handleLogin(loginData.schoolID, loginData.loginName, loginData.password);
+      handleLogin(loginData.schoolID, loginData.username, loginData.password);
     }
   }, []);
 

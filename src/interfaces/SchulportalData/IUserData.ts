@@ -1,5 +1,5 @@
 export default interface IUserData {
-    loginName: string,
+    username: string,
     lastName: string,
     firstName: string,
     birthDate: string,

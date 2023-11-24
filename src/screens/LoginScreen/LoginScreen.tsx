@@ -18,12 +18,12 @@ import { Dropdown } from "react-native-element-dropdown";
 import { useSchoolsWithIds } from "../../hooks/api/useSchoolsWithIds";
 
 export default function LoginScreen({ route, navigation }) {
-  const { schoolIDError, loginNameError, passwordError } = route.params;
+  const { schoolIDError, usernameError, passwordError } = route.params;
   const [schoolIDBorderColor, setSchoolIDBorderColor] = useState(
     DefaultColors.lightBlue
   );
-  const [loginNameText, setLoginNameText] = useState("");
-  const [loginNameBorderColor, setLoginNameBorderColor] = useState(
+  const [usernameText, setUsernameText] = useState("");
+  const [usernameBorderColor, setUsernameBorderColor] = useState(
     DefaultColors.lightBlue
   );
   const [passwordText, setPasswordText] = useState("");
@@ -40,8 +40,8 @@ export default function LoginScreen({ route, navigation }) {
 
   const { getData: getSchoolID, storeData: storeSchoolID } =
     useAsyncStorage("SchoolID");
-  const { getData: getLoginName, storeData: storeLoginName } =
-    useAsyncStorage("LoginName");
+  const { getData: getUsername, storeData: storeUsername } =
+    useAsyncStorage("Username");
   const { getData: getLoginPassword, storeData: storeLoginPassword } =
     useAsyncStorage("LoginPassword");
 
@@ -54,15 +54,15 @@ export default function LoginScreen({ route, navigation }) {
     const schoolID =
       selectedSchoolIndex === -1 ? "" : data[selectedSchoolIndex].schoolId;
 
-    if (loginNameText !== "DEMO" && passwordText !== "DEMO") {
+    if (usernameText !== "DEMO" && passwordText !== "DEMO") {
       storeSchoolID(schoolID);
-      storeLoginName(loginNameText);
+      storeUsername(usernameText);
       storeLoginPassword(passwordText);
     }
 
     navigation.replace("TryAutoLogin", {
       schoolID: schoolID,
-      loginName: loginNameText,
+      username: usernameText,
       password: passwordText,
     });
   }
@@ -74,10 +74,10 @@ export default function LoginScreen({ route, navigation }) {
       setSchoolIDBorderColor(DefaultColors.errorRed);
     }
 
-    if (loginNameError === 0) {
-      setLoginNameBorderColor(DefaultColors.lightBlue);
+    if (usernameError === 0) {
+      setUsernameBorderColor(DefaultColors.lightBlue);
     } else {
-      setLoginNameBorderColor(DefaultColors.errorRed);
+      setUsernameBorderColor(DefaultColors.errorRed);
     }
 
     if (passwordError === 0) {
@@ -87,7 +87,7 @@ export default function LoginScreen({ route, navigation }) {
     }
 
     setTextInputsEnabled(true);
-  }, [schoolIDError, loginNameError, passwordError]);
+  }, [schoolIDError, usernameError, passwordError]);
 
   useEffect(() => {
     const newData = schoolsWithIds.map((item, index) => {
@@ -134,10 +134,10 @@ export default function LoginScreen({ route, navigation }) {
           placeholderTextColor={fontColor}
           style={[
             styles.textInput,
-            { color: fontColor, borderColor: loginNameBorderColor },
+            { color: fontColor, borderColor: usernameBorderColor },
           ]}
-          onChangeText={(text) => setLoginNameText(text.trim())}
-          value={loginNameText}
+          onChangeText={(text) => setUsernameText(text.trim())}
+          value={usernameText}
           editable={areTextInputsEnabled}
           autoCapitalize="none"
         />
@@ -165,7 +165,7 @@ export default function LoginScreen({ route, navigation }) {
               setTextInputsEnabled(false);
               navigation.replace("TryAutoLogin", {
                 schoolID: -1,
-                loginName: "DEMO",
+                username: "DEMO",
                 password: "DEMO",
               });
             }}

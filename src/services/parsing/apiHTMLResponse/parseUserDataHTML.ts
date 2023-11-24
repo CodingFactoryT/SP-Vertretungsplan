@@ -1,6 +1,7 @@
 import { useContext } from "react"
 import { SIDContext } from "../../../contexts/Contexts";
 import parseHTMLTableBody from "../../parseHTMLTableBody";
+import DemoProvider from "../../../DataProvider/DemoProvider";
 
 export default function parseUserDataHTML(userDataHTML: string, sid) {
     const userDataTable = userDataHTML.substring(
@@ -8,7 +9,7 @@ export default function parseUserDataHTML(userDataHTML: string, sid) {
         userDataHTML.indexOf("</tbody>") + "</tbody>".length + 1
     );
     if(sid === "DEMO") {
-        return ["DEMO", "DEMO", "DEMO", "01.01.2000", "10", "10a", "DEMO"];
+        return DemoProvider.userData;
     }
     const tableData = parseHTMLTableBody(userDataTable);
 

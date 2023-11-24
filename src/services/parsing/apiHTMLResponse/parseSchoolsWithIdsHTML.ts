@@ -5,9 +5,9 @@ interface SchoolWithIDEntry {
     schoolID: number
 }
 
-export default function parseSchoolsWithIdsHTML(schoolsWithIdsJSON) {
-    const schoolsWithIDs = [].concat(...schoolsWithIdsJSON.map(schoolDistrict => {
-        return schoolDistrict.Schulen.map(school => {
+export default function parseSchoolsWithIdsHTML(schoolsWithIdsJSON: []) {
+    const schoolsWithIDs = [].concat(...schoolsWithIdsJSON.map((schoolDistrict: object) => {
+        return schoolDistrict.Schulen.map((school: object) => {
             return {schoolDistrict: schoolDistrict.Name, schoolName: school.Name, schoolID: school.Id};
         });
     }));

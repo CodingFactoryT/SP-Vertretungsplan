@@ -1,10 +1,12 @@
+import DemoProvider from "../../DataProvider/DemoProvider";
+
 export function getTeachers(sid: string, timetable) {
   let teachers = new Set();
   
   if (sid === "DEMO") {
-    teachers.add("DTO");
-    teachers.add("BKL");
-    teachers.add("RSM");
+    DemoProvider.teachers.forEach((teacher: string) => {
+      teachers.add(teacher);
+    });
   } else {
     for (let row = 0; row < timetable.length; row++) {
       //start at second column because first column is only description

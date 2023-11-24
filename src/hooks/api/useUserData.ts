@@ -8,7 +8,7 @@ export function useUserData() {
     const [sid] = useContext(SIDContext);
 
     const [userData, setUserData] = useState({
-        loginName: "",
+        username: "",
         lastName: "",
         firstName: "",
         birthDate: "",
@@ -31,7 +31,7 @@ export function useUserData() {
         }).then(response => {   //TODO: Fehler - Diese Funktion ist für diesen Account nicht freigeschaltet
             const userData = parseUserDataHTML(response.data, sid);
             setUserData({
-                loginName: userData![0],
+                username: userData![0],
                 lastName: userData![1],
                 firstName: userData![2],
                 birthDate: userData![3],
