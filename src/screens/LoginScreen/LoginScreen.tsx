@@ -17,7 +17,7 @@ import useAsyncStorage from "../../hooks/useAsyncStorage";
 import { Dropdown } from "react-native-element-dropdown";
 import { useSchoolsWithIds } from "../../hooks/api/useSchoolsWithIds";
 
-export default function LoginScreen({ route, navigation }) {
+export default function LoginScreen({ route, navigation }: any) {
   const { schoolIDError, usernameError, passwordError } = route.params;
   const [schoolIDBorderColor, setSchoolIDBorderColor] = useState(
     DefaultColors.lightBlue

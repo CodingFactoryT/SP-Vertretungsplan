@@ -1,7 +1,19 @@
 import { View } from "react-native";
 import Svg, { Path, Rect } from "react-native-svg";
 
-const SquaredIcon = ({ width, color, viewBox, path }) => {
+type SquaredIconObject = {
+  width: string | number;
+  color: string;
+  viewBox: string;
+  path: string;
+};
+
+type IconObject = {
+  width: string | number;
+  color: string;
+};
+
+const SquaredIcon = ({ width, color, viewBox, path }: SquaredIconObject) => {
   return (
     <View style={{ width: width, aspectRatio: 1 }}>
       <Svg viewBox={viewBox} width={"100%"} height={"100%"}>
@@ -11,7 +23,7 @@ const SquaredIcon = ({ width, color, viewBox, path }) => {
   );
 };
 
-export const LightModeIcon = ({ width, color }) => (
+export const LightModeIcon = ({ width, color }: IconObject) => (
   <SquaredIcon
     width={width}
     color={color}
@@ -22,7 +34,7 @@ export const LightModeIcon = ({ width, color }) => (
   />
 );
 
-export const DarkModeIcon = ({ width, color }) => (
+export const DarkModeIcon = ({ width, color }: IconObject) => (
   <SquaredIcon
     width={width}
     color={color}
@@ -33,7 +45,7 @@ export const DarkModeIcon = ({ width, color }) => (
   />
 );
 
-export const VisibilityOnIcon = ({ width, color }) => (
+export const VisibilityOnIcon = ({ width, color }: IconObject) => (
   <SquaredIcon
     width={width}
     color={color}
@@ -44,7 +56,7 @@ export const VisibilityOnIcon = ({ width, color }) => (
   />
 );
 
-export const VisibilityOffIcon = ({ width, color }) => (
+export const VisibilityOffIcon = ({ width, color }: IconObject) => (
   <SquaredIcon
     width={width}
     color={color}

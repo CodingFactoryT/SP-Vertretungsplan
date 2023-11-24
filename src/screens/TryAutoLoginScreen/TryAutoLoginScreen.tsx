@@ -4,7 +4,7 @@ import { useLogin } from "../../hooks/api/useLogin";
 import { SIDContext } from "../../contexts/Contexts";
 import useAsyncStorage from "../../hooks/useAsyncStorage";
 
-export default function TryAutoLoginScreen({ route, navigation }) {
+export default function TryAutoLoginScreen({ route, navigation }: any) {
   const loginData = route.params;
   const [login] = useLogin();
   const { sid } = useContext(SIDContext);
@@ -16,9 +16,15 @@ export default function TryAutoLoginScreen({ route, navigation }) {
   const { getData: getPassword, storeData: storePassword } =
     useAsyncStorage("Password");
 
-  function handleLogin(schoolID, name, password) {
+  type LoginProp = string | null | undefined;
+
+  function handleLogin(
+    schoolID: LoginProp,
+    username: LoginProp,
+    password: LoginProp
+  ) {
     if (sid === "" || sid === "DEMO") {
-      login(schoolID, name, password).then(
+      login(schoolID, username, password).then(
         ([schoolIDError, usernameError, passwordError, sid]) => {
           if (sid === "") {
             navigation.replace("Login", {

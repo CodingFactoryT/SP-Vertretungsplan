@@ -5,7 +5,7 @@ import { DarkModeIcon, LightModeIcon } from "../resources/assets/icons";
 import DefaultColors from "../styles/DefaultColors";
 import useAsyncStorage from "../hooks/useAsyncStorage";
 
-export default function ThemeChangerComponent(props) {
+export default function ThemeChangerComponent(props: any) {
   const { getData: getTheme, storeData: storeTheme } = useAsyncStorage("Theme");
   const { theme, toggleTheme, setTheme } = useContext(ThemeContext);
 

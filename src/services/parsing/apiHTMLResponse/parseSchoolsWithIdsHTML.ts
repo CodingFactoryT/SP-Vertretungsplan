@@ -1,14 +1,27 @@
 import React from 'react';
 
-interface SchoolWithIDEntry {
+type School = {
+    Id: string,
+    Name: string,
+    Ort: string
+}
+
+type SchoolDistrict = {
+    Id: string,
+    Name: string, 
+    Schulen: School[]
+}
+
+type SchoolEntry = {
+    schoolDistrict: string,
     schoolName: string,
-    schoolID: number
+    schoolID: string
 }
 
 export default function parseSchoolsWithIdsHTML(schoolsWithIdsJSON: []) {
-    const schoolsWithIDs = [].concat(...schoolsWithIdsJSON.map((schoolDistrict: object) => {
-        return schoolDistrict.Schulen.map((school: object) => {
-            return {schoolDistrict: schoolDistrict.Name, schoolName: school.Name, schoolID: school.Id};
+    const schoolsWithIDs = ([] as SchoolEntry[]).concat(...schoolsWithIdsJSON.map((schoolDistrict: SchoolDistrict) => {
+        return schoolDistrict.Schulen.map((school: School) => {
+            return {schoolDistrict: schoolDistrict.Name, schoolName: school.Name, schoolID: school.Id} as SchoolEntry;
         });
     }));
     const sortedSchoolsWithIDs = schoolsWithIDs.sort((a, b) => a.schoolName.localeCompare(b.schoolName, undefined, {sensitivity: "base"}));

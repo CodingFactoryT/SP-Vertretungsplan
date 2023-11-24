@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { ThemeContext } from "./Contexts";
 import DefaultColors from "../styles/DefaultColors";
 
-type theme = "light" | "dark";
+type Theme = "light" | "dark";
 
 export function ThemeProvider({ children }) {
-  const [theme, setStateTheme] = useState<theme>("light");
+  const [theme, setStateTheme] = useState<Theme>("light");
   const [backgroundColor, setBackgroundColor] = useState(
     DefaultColors.lightThemedBackground
   );

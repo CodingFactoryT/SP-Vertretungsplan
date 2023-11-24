@@ -12,7 +12,7 @@ export default function PasswordInputToggableVisibilityComponent({
   setPasswordText,
   passwordText,
   isEnabled,
-}) {
+}: any) {
   const [isPasswordVisible, setPasswordVisible] = useState(false);
   const { fontColor } = useContext(ThemeContext);
 

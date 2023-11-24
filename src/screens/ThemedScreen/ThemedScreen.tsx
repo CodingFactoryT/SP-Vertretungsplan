@@ -1,11 +1,10 @@
 import React, { useContext } from "react";
 import ThemeChangerComponent from "../../components/ThemeChangerComponent";
 import { View, StyleSheet, StatusBar } from "react-native";
-import DefaultColors from "../../styles/DefaultColors";
 import { ThemeContext } from "../../contexts/Contexts";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function ThemedScreen({ children }) {
+export default function ThemedScreen({ children }: any) {
   const { theme, backgroundColor } = useContext(ThemeContext);
 
   const statusBarStyle = theme === "light" ? "dark-content" : "light-content";
