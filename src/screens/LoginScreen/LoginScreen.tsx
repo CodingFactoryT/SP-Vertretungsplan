@@ -15,7 +15,7 @@ import { ThemeContext } from "../../contexts/Contexts";
 import PasswordInputToggableVisibilityComponent from "./components/PasswordInputToggableVisibilityComponent";
 import useAsyncStorage from "../../hooks/useAsyncStorage";
 import { Dropdown } from "react-native-element-dropdown";
-import { useSchoolsWithIds } from "../../hooks/api/useSchoolsWithIds";
+import { fetchSchoolsWithIDs } from "../../services/api/fetchSchoolsWithIDs";
 
 export default function LoginScreen({ route, navigation }: any) {
   const { schoolIDError, usernameError, passwordError } = route.params;
@@ -41,7 +41,7 @@ export default function LoginScreen({ route, navigation }: any) {
     useAsyncStorage("Password");
 
   const [data, setData] = useState();
-  const { schoolsWithIds, isLoading } = useSchoolsWithIds();
+  const { schoolsWithIds, isLoading } = fetchSchoolsWithIDs();
   const [selectedSchoolIndex, setSelectedSchoolIndex] = useState(-1);
 
   function onLoginButtonPress() {

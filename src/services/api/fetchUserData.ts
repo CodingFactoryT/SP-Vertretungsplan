@@ -1,12 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
-import IUserData from '../../interfaces/SchulportalData/IUserData';
 import axios from 'axios';
-import parseUserDataHTML from '../../services/parsing/apiHTMLResponse/parseUserDataHTML';
-import { SIDContext } from '../../contexts/Contexts';
+import parseUserDataHTML from '../parsing/apiHTMLResponse/parseUserDataHTML';
 
-export function useUserData() {
-    const { sid } = useContext(SIDContext);
-
+export function fetchUserData(sid: string) {
     const [userData, setUserData] = useState({
         username: "",
         lastName: "",

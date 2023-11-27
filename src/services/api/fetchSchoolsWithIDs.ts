@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import parseSchoolsWithIdsHTML from '../../services/parsing/apiHTMLResponse/parseSchoolsWithIdsHTML';
+import parseSchoolsWithIdsHTML from '../parsing/apiHTMLResponse/parseSchoolsWithIdsHTML';
 
-export function useSchoolsWithIds() {
+export function fetchSchoolsWithIDs() {
     type SchoolEntry = {
         schoolDistrict: string,
         schoolName: string,

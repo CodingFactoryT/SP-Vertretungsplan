@@ -1,13 +1,12 @@
 import React, { useEffect, useContext } from "react";
 import LoadingComponent from "../../components/LoadingComponent";
-import { useLogin } from "../../hooks/api/useLogin";
+import { login } from "../../services/api/login";
 import { SIDContext } from "../../contexts/Contexts";
 import useAsyncStorage from "../../hooks/useAsyncStorage";
 
 export default function TryAutoLoginScreen({ route, navigation }: any) {
   const loginData = route.params;
-  const [login] = useLogin();
-  const { sid } = useContext(SIDContext);
+  const { sid, setSid } = useContext(SIDContext);
 
   const { getData: getSchoolID, storeData: storeSchoolID } =
     useAsyncStorage("SchoolID");
@@ -26,6 +25,7 @@ export default function TryAutoLoginScreen({ route, navigation }: any) {
     if (sid === "" || sid === "DEMO") {
       login(schoolID, username, password).then(
         ([schoolIDError, usernameError, passwordError, sid]) => {
+          setSid(sid);
           if (sid === "") {
             navigation.replace("Login", {
               schoolIDError: schoolIDError,

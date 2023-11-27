@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import ISubstitutionPlanEntry from '../../interfaces/SchulportalData/ISubstitutionPlanEntry';
 import axios from 'axios';
-import parseSubstitutionPlanHTML from '../../services/parsing/apiHTMLResponse/parseSubstitutionPlanHTML';
+import parseSubstitutionPlanHTML from '../parsing/apiHTMLResponse/parseSubstitutionPlanHTML';
 import { SIDContext } from '../../contexts/Contexts';
 import DemoProvider from '../../DataProvider/DemoProvider';
 
-export function useSubstitutionPlanEntriesWithDates() {
+export function fetchSubstitutionPlanEntriesWithDates() {
     const [firstDate, setFirstDate] = useState("");
     const [secondDate, setSecondDate] = useState("");
     const [substitutionPlanEntriesOfFirstDate, setSubstitutionPlanEntriesOfFirstDate] = useState<ISubstitutionPlanEntry[]>([]);

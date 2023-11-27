@@ -10,62 +10,61 @@ import {
 } from "react-native";
 import DefaultColors from "../../styles/DefaultColors";
 import SubstitutionPlanEntry from "./components/SubstitutionPlanEntry";
-import { useUserData } from "../../hooks/api/useUserData";
-import { useSubstitutionPlanEntriesWithDates } from "../../hooks/api/useSubstitutionPlanEntriesWithDates";
+import { fetchUserData } from "../../services/api/fetchUserData";
+import { fetchSubstitutionPlanEntriesWithDates } from "../../services/api/fetchSubstitutionPlanEntriesWithDates";
 import ISubstitutionPlanEntry from "../../interfaces/SchulportalData/ISubstitutionPlanEntry";
 import ThemedScreen from "../ThemedScreen/ThemedScreen";
 import { SIDContext, ThemeContext } from "../../contexts/Contexts";
 import LoadingComponent from "../../components/LoadingComponent";
 import NoSubstitutionsEntry from "./components/NoSubstitutionsEntry";
-import { useTimetable } from "../../hooks/api/useTimetable";
+import { fetchTimetable } from "../../services/api/fetchTimetable";
 import useAsyncStorage from "../../hooks/useAsyncStorage";
 import { getTeachers } from "../../services/parsing/getTeachers";
+
+enum SubstitutionSelection {
+  FIRST,
+  SECOND,
+}
+
+type SubstitutionDayBundle = {
+  date: string;
+  entries: ISubstitutionPlanEntry[];
+};
+
+type Substitutions = {
+  first: SubstitutionDayBundle;
+  second: SubstitutionDayBundle;
+};
 
 export default function SubstitutionPlanScreen() {
   const [isDonatePopupVisible, setDonatePopupVisible] = useState(false);
   const [isContactPopupVisible, setContactPopupVisible] = useState(false);
 
-  const [substitutionPlanEntries, setSubstitutionPlanEntries] = useState<
-    ISubstitutionPlanEntry[]
-  >([]);
-  const [
-    substitutionPlanEntriesOfFirstDate,
-    setSubstitutionPlanEntriesOfFirstDate,
-  ] = useState<ISubstitutionPlanEntry[]>([]);
-  const [
-    substitutionPlanEntriesOfSecondDate,
-    setSubstitutionPlanEntriesOfSecondDate,
-  ] = useState<ISubstitutionPlanEntry[]>([]);
+  const [substitutions, setSubstitutions] = useState<Substitutions>();
+  const [displayedEntries, setDisplayedEntries] =
+    useState<ISubstitutionPlanEntry[]>();
+  const [selectedSubstitutions, setSelectedSubstitutions] =
+    useState<SubstitutionSelection>(SubstitutionSelection.FIRST);
 
-  const [firstDate, setFirstDate] = useState("...");
-  const [secondDate, setSecondDate] = useState("...");
-
-  enum SelectedDate {
-    "FirstDate",
-    "SecondDate",
-  }
-  const [selectedDate, setSelectedDate] = useState<SelectedDate>(
-    SelectedDate.FirstDate
-  );
+  const { sid } = useContext(SIDContext);
   const [class_, setClass] = useState("?");
   const [isScreenLoading, setScreenLoading] = useState(true);
 
-  const [userData, isUserDataLoading] = useUserData();
+  const [userData, isUserDataLoading] = fetchUserData(sid);
 
   const [
-    firstDate_,
-    substitutionPlanEntriesOfFirstDate_,
-    secondDate_,
-    substitutionPlanEntriesOfSecondDate_,
+    firstDate,
+    substitutionPlanEntriesOfFirstDate,
+    secondDate,
+    substitutionPlanEntriesOfSecondDate,
     areSubstitutionPlanEntriesLoading,
-  ] = useSubstitutionPlanEntriesWithDates();
+  ] = fetchSubstitutionPlanEntriesWithDates();
 
   const [
     isPersonalizedSubstitutionPlanEnabled,
     setPersonalizedSubstitutionPlanEnabled,
   ] = useState(false);
 
-  const [getTimetable] = useTimetable();
   const [timetable, setTimetable] = useState([[]]);
   const {
     getData: getPersonalizedSubstitutionPlanEnabledInAsyncStorage,
@@ -78,23 +77,23 @@ export default function SubstitutionPlanScreen() {
     }
 
     if (!areSubstitutionPlanEntriesLoading) {
-      setFirstDate(firstDate_);
-      setSubstitutionPlanEntriesOfFirstDate([
-        ...substitutionPlanEntriesOfFirstDate_,
-      ]);
-
-      setSecondDate(secondDate_);
-      setSubstitutionPlanEntriesOfSecondDate([
-        ...substitutionPlanEntriesOfSecondDate_,
-      ]);
-
-      setSubstitutionPlanEntries([...substitutionPlanEntriesOfFirstDate_]);
+      setSubstitutions({
+        first: {
+          date: firstDate,
+          entries: substitutionPlanEntriesOfFirstDate,
+        },
+        second: {
+          date: secondDate,
+          entries: substitutionPlanEntriesOfSecondDate,
+        },
+      });
+      setDisplayedEntries(substitutionPlanEntriesOfFirstDate);
       setScreenLoading(false);
     }
   }, [areSubstitutionPlanEntriesLoading, isUserDataLoading]);
 
   useEffect(() => {
-    getTimetable().then((retrievedTimetable) => {
+    fetchTimetable(sid).then((retrievedTimetable) => {
       setTimetable([...retrievedTimetable]);
     });
   }, []);
@@ -116,7 +115,6 @@ export default function SubstitutionPlanScreen() {
     );
   }, [timetable]);
 
-  const { sid } = useContext(SIDContext);
   function togglePersonalizedSubstitutionPlan() {
     if (!isPersonalizedSubstitutionPlanEnabled) {
       storePersonalizedSubstitutionPlanEnabledInAsyncStorage("true");
@@ -126,13 +124,13 @@ export default function SubstitutionPlanScreen() {
         sid
       );
 
-      setSubstitutionPlanEntries([...filteredEntries]);
+      setDisplayedEntries([...filteredEntries]);
     } else {
       storePersonalizedSubstitutionPlanEnabledInAsyncStorage("false");
-      if (selectedDate === SelectedDate.FirstDate) {
-        setSubstitutionPlanEntries([...substitutionPlanEntriesOfFirstDate]);
+      if (selectedSubstitutions === SubstitutionSelection.FIRST) {
+        setDisplayedEntries([...substitutionPlanEntriesOfFirstDate]);
       } else {
-        setSubstitutionPlanEntries([...substitutionPlanEntriesOfSecondDate]);
+        setDisplayedEntries([...substitutionPlanEntriesOfSecondDate]);
       }
     }
 
@@ -161,54 +159,28 @@ export default function SubstitutionPlanScreen() {
             <TouchableOpacity
               style={styles.button}
               onPress={() => {
-                if (isPersonalizedSubstitutionPlanEnabled) {
-                  const filteredEntries = personalizeSubstitutionPlanEntries(
-                    timetable,
-                    substitutionPlanEntriesOfFirstDate,
-                    sid
-                  );
-
-                  setSubstitutionPlanEntries([...filteredEntries]);
-                } else {
-                  setSubstitutionPlanEntries([
-                    ...substitutionPlanEntriesOfFirstDate,
-                  ]);
-                }
-                setSelectedDate(SelectedDate.FirstDate);
+                setSelectedSubstitutions(SubstitutionSelection.FIRST);
               }}
             >
-              <Text>{firstDate}</Text>
+              <Text>{substitutions.first.date}</Text>
             </TouchableOpacity>
           )}
           {secondDate !== "---" && (
             <TouchableOpacity
               style={styles.button}
               onPress={() => {
-                if (isPersonalizedSubstitutionPlanEnabled) {
-                  const filteredEntries = personalizeSubstitutionPlanEntries(
-                    timetable,
-                    substitutionPlanEntriesOfSecondDate,
-                    sid
-                  );
-
-                  setSubstitutionPlanEntries([...filteredEntries]);
-                } else {
-                  setSubstitutionPlanEntries([
-                    ...substitutionPlanEntriesOfSecondDate,
-                  ]);
-                }
-                setSelectedDate(SelectedDate.SecondDate);
+                setSelectedSubstitutions(SubstitutionSelection.SECOND);
               }}
             >
-              <Text>{secondDate}</Text>
+              <Text>{substitutions.second.date}</Text>
             </TouchableOpacity>
           )}
         </View>
         <ScrollView>
-          {substitutionPlanEntries.length === 0 ? (
+          {displayedEntries.length === 0 ? (
             <NoSubstitutionsEntry />
           ) : (
-            substitutionPlanEntries.map((item) => (
+            displayedEntries.map((item) => (
               <SubstitutionPlanEntry
                 {...item}
                 key={item.lesson + item.originalRoom + item.originalTeacher}
