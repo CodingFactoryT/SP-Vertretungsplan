@@ -20,6 +20,7 @@ import NoSubstitutionsEntry from "./components/NoSubstitutionsEntry";
 import { fetchTimetable } from "../../services/api/fetchTimetable";
 import useAsyncStorage from "../../hooks/useAsyncStorage";
 import { getTeachers } from "../../services/parsing/getTeachers";
+import BasicModal from "../../components/BasicModal";
 
 enum SubstitutionSelection {
   FIRST,
@@ -43,6 +44,8 @@ export default function SubstitutionPlanScreen() {
   const [substitutions, setSubstitutions] = useState<Substitutions>();
   const [displayedEntries, setDisplayedEntries] =
     useState<ISubstitutionPlanEntry[]>();
+  const [areSubsitutionsPersonalized, setSubstitutionsPersonalized] =
+    useState(false);
   const [selectedSubstitutions, setSelectedSubstitutions] =
     useState<SubstitutionSelection>(SubstitutionSelection.FIRST);
 
@@ -59,11 +62,6 @@ export default function SubstitutionPlanScreen() {
     substitutionPlanEntriesOfSecondDate,
     areSubstitutionPlanEntriesLoading,
   ] = fetchSubstitutionPlanEntriesWithDates();
-
-  const [
-    isPersonalizedSubstitutionPlanEnabled,
-    setPersonalizedSubstitutionPlanEnabled,
-  ] = useState(false);
 
   const [timetable, setTimetable] = useState([[]]);
   const {
@@ -108,7 +106,7 @@ export default function SubstitutionPlanScreen() {
     getPersonalizedSubstitutionPlanEnabledInAsyncStorage().then(
       (isPersonalizedSubstitutionPlanEnabledInAsyncStorage) => {
         if (isPersonalizedSubstitutionPlanEnabledInAsyncStorage === "true") {
-          setPersonalizedSubstitutionPlanEnabled(false);
+          setSubstitutionsPersonalized(false);
           togglePersonalizedSubstitutionPlan();
         }
       }
@@ -116,7 +114,7 @@ export default function SubstitutionPlanScreen() {
   }, [timetable]);
 
   function togglePersonalizedSubstitutionPlan() {
-    if (!isPersonalizedSubstitutionPlanEnabled) {
+    if (!areSubsitutionsPersonalized) {
       storePersonalizedSubstitutionPlanEnabledInAsyncStorage("true");
       const filteredEntries = personalizeSubstitutionPlanEntries(
         timetable,
@@ -134,7 +132,7 @@ export default function SubstitutionPlanScreen() {
       }
     }
 
-    setPersonalizedSubstitutionPlanEnabled((previousState) => !previousState);
+    setSubstitutionsPersonalized((previousState) => !previousState);
   }
 
   const { theme, fontColor } = useContext(ThemeContext);
@@ -143,6 +141,23 @@ export default function SubstitutionPlanScreen() {
     theme === "light"
       ? DefaultColors.lightThemedSecondBackground
       : DefaultColors.darkThemedSecondBackground;
+
+  useEffect(() => {
+    let newEntries = substitutions?.first.entries;
+    if (selectedSubstitutions === SubstitutionSelection.SECOND) {
+      newEntries = substitutions?.second.entries;
+    }
+
+    if (areSubsitutionsPersonalized) {
+      newEntries = personalizeSubstitutionPlanEntries(
+        timetable,
+        newEntries,
+        sid
+      );
+    }
+
+    setDisplayedEntries(newEntries);
+  }, [selectedSubstitutions, areSubsitutionsPersonalized]);
 
   if (isScreenLoading) {
     return <LoadingComponent />;
@@ -194,11 +209,11 @@ export default function SubstitutionPlanScreen() {
           </Text>
           <Switch
             style={styles.personalizedSubstitutionPlanSwitch}
-            onValueChange={togglePersonalizedSubstitutionPlan}
-            value={isPersonalizedSubstitutionPlanEnabled}
-            thumbColor={
-              isPersonalizedSubstitutionPlanEnabled ? "#0061FF" : "white"
+            onValueChange={(isSwitchOn) =>
+              setSubstitutionsPersonalized(isSwitchOn)
             }
+            value={areSubsitutionsPersonalized}
+            thumbColor={areSubsitutionsPersonalized ? "#0061FF" : "white"}
             trackColor={{
               true: "#0088FF",
               false: "#ababab",
@@ -235,109 +250,33 @@ export default function SubstitutionPlanScreen() {
           </TouchableOpacity>
         </View>
       </View>
-      <Modal
-        animationType="slide"
-        transparent={true}
+      <BasicModal
         visible={isDonatePopupVisible}
-        onRequestClose={() => {
-          setDonatePopupVisible(!isDonatePopupVisible);
-        }}
-      >
-        <View style={styles.centeredView}>
-          <View
-            style={[
-              styles.modalView,
-              { backgroundColor: modalBackgroundColor },
-            ]}
-          >
-            <Text style={{ color: fontColor }}>
-              Liebe Nutzerin, lieber Nutzer, {"\n"}
-              {"\n"}die Erstellung einer solchen App benötigt viel Zeit und
-              Arbeit. {"\n"}Um die App in Zukunft weiter entwicklen zu können
-              und neue Features einzubauen, wäre es super, wenn du mir eine
-              kleine Spende über PayPal hinterlassen würdest:{"\n"}
-              {"\n"}
-              PayPal-Adresse: codingt.paypal@gmail.com {"\n"}
-              {"\n"}Vielen Dank für Deine Unterstützung! {"\n"}
-              {"\n"}-Tim B., Entwickler
-            </Text>
-            <View style={{ justifyContent: "flex-end", marginTop: 10 }}>
-              <Button
-                title="Alles klar!"
-                onPress={() => {
-                  setDonatePopupVisible(false);
-                }}
-              />
-            </View>
-          </View>
-        </View>
-      </Modal>
-      <Modal
-        animationType="slide"
-        transparent={true}
+        onRequestClose={() => setDonatePopupVisible(false)}
+        onButtonPress={() => setDonatePopupVisible(false)}
+        textFontColor={fontColor}
+        modalBackgroundColor={modalBackgroundColor}
+        buttonTitle="Alles klar!"
+        text={
+          "Liebe Nutzerin, lieber Nutzer, \n\ndie Erstellung einer solchen App benötigt viel Zeit und Arbeit. \nUm die App in Zukunft weiter entwicklen zu können und neue Features einzubauen, wäre es super, wenn du mir eine kleine Spende über PayPal hinterlassen würdest:\n\nPayPal-Adresse: codingt.paypal@gmail.com \n\nVielen Dank für Deine Unterstützung! \n\n-Tim B., Entwickler"
+        }
+      />
+      <BasicModal
         visible={isContactPopupVisible}
-        onRequestClose={() => {
-          setContactPopupVisible(!isContactPopupVisible);
-        }}
-      >
-        <View style={styles.centeredView}>
-          <View
-            style={[
-              styles.modalView,
-              { backgroundColor: modalBackgroundColor },
-            ]}
-          >
-            <Text style={{ color: fontColor }}>
-              Liebe Nutzerin, lieber Nutzer, {"\n"}
-              {"\n"}Du hast einen Bug/Fehler in der App gefunden? {"\n"}Du hast
-              Ideen für neue Features? {"\n"}Du möchstest mir ein Feedback
-              geben? {"\n"}Oder du hast eine Frage? {"\n"}
-              {"\n"}Dann melde dich doch gerne über eine der folgenden
-              Kommunikationsplattformen und hilf aktiv mit, die App
-              weiterzuentwicklen!{"\n"}
-              {"\n"}
-              -Discord: https://discord.gg/deftTGQzb2 {"\n"}
-              -E-Mail: codingfactoryt@gmail.com
-              {"\n"}
-              {"\n"}Ich freue mich auf Deine Anfrage! {"\n"}
-              {"\n"}-Tim B., Entwickler
-            </Text>
-            <View style={{ justifyContent: "flex-end", marginTop: 10 }}>
-              <Button
-                title="Alles klar!"
-                onPress={() => {
-                  setContactPopupVisible(false);
-                }}
-              />
-            </View>
-          </View>
-        </View>
-      </Modal>
+        onRequestClose={() => setContactPopupVisible(false)}
+        onButtonPress={() => setContactPopupVisible(false)}
+        textFontColor={fontColor}
+        modalBackgroundColor={modalBackgroundColor}
+        buttonTitle="Alles klar!"
+        text={
+          "Liebe Nutzerin, lieber Nutzer, \n\nDu hast einen Bug/Fehler in der App gefunden? \nDu hast Ideen für neue Features? \nDu möchstest mir ein Feedback geben? \nOder du hast eine Frage? \n \nDann melde dich doch gerne über eine der folgenden Kommunikationsplattformen und hilf aktiv mit, die App weiterzuentwicklen!\n\n-Discord: https://discord.gg/deftTGQzb2 \n-E-Mail: codingfactoryt@gmail.com\n\nIch freue mich auf Deine Anfrage! \n\n-Tim B., Entwickler"
+        }
+      />
     </ThemedScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  modalView: {
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 20,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    margin: 20,
-  },
   bottomButtonsStyle: {
     flexDirection: "row",
     height: "5%",
