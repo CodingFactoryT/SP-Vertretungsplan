@@ -177,7 +177,9 @@ export default function SubstitutionPlanScreen() {
                 setSelectedSubstitutions(SubstitutionSelection.FIRST);
               }}
             >
-              <Text>{substitutions.first.date}</Text>
+              <Text style={{ textAlign: "center" }}>
+                {substitutions.first.date}
+              </Text>
             </TouchableOpacity>
           )}
           {secondDate !== "---" && (
@@ -187,7 +189,9 @@ export default function SubstitutionPlanScreen() {
                 setSelectedSubstitutions(SubstitutionSelection.SECOND);
               }}
             >
-              <Text>{substitutions.second.date}</Text>
+              <Text style={{ textAlign: "center" }}>
+                {substitutions.second.date}
+              </Text>
             </TouchableOpacity>
           )}
         </View>

@@ -4,9 +4,6 @@ import parseHTMLTableBody from "../../parseHTMLTableBody";
 const DOMParser = require("react-native-html-parser");
 
 export default function parseSubstitutionPlanHTML(vertretungsplanHTML: string) {
-  let firstDate = "";
-  let secondDate = "";
-
   let firstDateFound = false;
 
   const firstDateVertretungen = vertretungsplanHTML.substring(
@@ -32,35 +29,11 @@ export default function parseSubstitutionPlanHTML(vertretungsplanHTML: string) {
     "Samstag",
     "Sonntag",
   ];
-  weekdays.forEach((weekday) => {
-    let index = -1;
-    if ((index = striptags(vertretungsplanHTML).indexOf(weekday)) !== -1) {
-      const halfParsedDate = striptags(vertretungsplanHTML)
-        .substring(index, index + weekday.length + 98)
-        .replace("den", "");
-      const date = "   " + halfParsedDate.substring(0, halfParsedDate.indexOf(".") + 8).replaceAll(" ", "");
-      if (!firstDateFound) {
-        firstDate = date;
-        firstDateFound = true;
-      } else {
-        secondDate = date;
-      }
-    }
-  });
 
-  if(firstDate.includes("Montag") && secondDate.includes("Freitag")) {
-    const secondDateTemp = secondDate;
-    secondDate = firstDate;
-    firstDate = secondDateTemp;
-  }
-
-  if(firstDate === "") {
-    firstDate = "---";
-  }
-
-  if(secondDate === "") {
-    secondDate = "---";
-  }
+  let matches = striptags(vertretungsplanHTML).replace(/\s+/g, " ").matchAll(new RegExp(`(${weekdays.join("|")}),\\s+den\\s([\\d]{2}.[\\d]{2}.[\\d]{4})`, "g"));
+  const firstDate = formatDate(matches.next().value[0]);
+  const secondDate = formatDate(matches.next().value[0]);
+  
   return {
     firstDateValues: {
       date: firstDate,
@@ -112,4 +85,8 @@ function getDescriptions(vertretungsHTML: string) {
     }
   }
   return descriptions;
+}
+
+function formatDate(date: string) {
+  return date.replace(" den", "\n");
 }
