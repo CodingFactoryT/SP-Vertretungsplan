@@ -4,13 +4,13 @@ import { ThemeContext } from "../contexts/Contexts";
 import { DarkModeIcon, LightModeIcon } from "../resources/assets/icons";
 import DefaultColors from "../styles/DefaultColors";
 import useAsyncStorage from "../hooks/useAsyncStorage";
+import StorageProvider from "../DataProvider/StorageProvider";
 
 export default function ThemeChangerComponent(props: any) {
-  const { getData: getTheme, storeData: storeTheme } = useAsyncStorage("Theme");
+  const { storeTheme, getStoredTheme } = StorageProvider();
   const { theme, toggleTheme, setTheme } = useContext(ThemeContext);
-
   useEffect(() => {
-    getTheme().then((storedTheme) => {
+    getStoredTheme().then((storedTheme) => {
       if (storedTheme === "dark") {
         setTheme("dark");
         setSwitchState(true);

@@ -2,18 +2,11 @@ import React, { useEffect, useContext } from "react";
 import LoadingComponent from "../../components/LoadingComponent";
 import { login } from "../../services/api/login";
 import { SIDContext } from "../../contexts/Contexts";
-import useAsyncStorage from "../../hooks/useAsyncStorage";
+import StorageProvider from "../../DataProvider/StorageProvider";
 
 export default function TryAutoLoginScreen({ route, navigation }: any) {
   const loginData = route.params;
   const { sid, setSid } = useContext(SIDContext);
-
-  const { getData: getSchoolID, storeData: storeSchoolID } =
-    useAsyncStorage("SchoolID");
-  const { getData: getUsername, storeData: storeUsername } =
-    useAsyncStorage("Username");
-  const { getData: getPassword, storeData: storePassword } =
-    useAsyncStorage("Password");
 
   type LoginProp = string | null | undefined;
 
@@ -49,15 +42,15 @@ export default function TryAutoLoginScreen({ route, navigation }: any) {
     }
   }
 
+  const { getStoredLoginData } = StorageProvider();
   useEffect(() => {
     if (loginData.username === "" && loginData.password === "") {
       //if its the initial call
 
-      Promise.all([getSchoolID(), getUsername(), getPassword()]).then(
-        ([schoolID, username, password]) => {
-          handleLogin(schoolID, username, password);
-        }
-      );
+      getStoredLoginData().then((storedLoginData) => {
+        //[schoolID, username, password]
+        handleLogin(storedLoginData[0], storedLoginData[1], storedLoginData[2]);
+      });
     } else {
       handleLogin(loginData.schoolID, loginData.username, loginData.password);
     }

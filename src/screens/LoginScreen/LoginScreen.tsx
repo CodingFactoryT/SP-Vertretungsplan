@@ -16,6 +16,7 @@ import PasswordInputToggableVisibilityComponent from "./components/PasswordInput
 import useAsyncStorage from "../../hooks/useAsyncStorage";
 import { Dropdown } from "react-native-element-dropdown";
 import { fetchSchoolsWithIDs } from "../../services/api/fetchSchoolsWithIDs";
+import StorageProvider from "../../DataProvider/StorageProvider";
 
 export default function LoginScreen({ route, navigation }: any) {
   const { schoolIDError, usernameError, passwordError } = route.params;
@@ -33,13 +34,6 @@ export default function LoginScreen({ route, navigation }: any) {
   const [areTextInputsEnabled, setTextInputsEnabled] = useState(true);
   const { fontColor } = useContext(ThemeContext);
 
-  const { getData: getSchoolID, storeData: storeSchoolID } =
-    useAsyncStorage("SchoolID");
-  const { getData: getUsername, storeData: storeUsername } =
-    useAsyncStorage("Username");
-  const { getData: getPassword, storeData: storePassword } =
-    useAsyncStorage("Password");
-
   const [data, setData] = useState();
   const { schoolsWithIds, isLoading } = fetchSchoolsWithIDs();
   const [selectedSchoolIndex, setSelectedSchoolIndex] = useState(-1);
@@ -49,10 +43,9 @@ export default function LoginScreen({ route, navigation }: any) {
     const schoolID =
       selectedSchoolIndex === -1 ? "" : data[selectedSchoolIndex].schoolId;
 
+    const { storeLoginData } = StorageProvider();
     if (usernameText !== "DEMO" && passwordText !== "DEMO") {
-      storeSchoolID(schoolID);
-      storeUsername(usernameText);
-      storePassword(passwordText);
+      storeLoginData(schoolID, usernameText, passwordText);
     }
 
     navigation.replace("TryAutoLogin", {

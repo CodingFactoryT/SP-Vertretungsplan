@@ -13,17 +13,17 @@ export async function login(schoolID: string, username: string, password: string
         return [-1, -1, -1, "DEMO"];
     }
 
-    if(username === "") {    //check for incomplete user input
+    if(!username) {    //check for incomplete user input, ! checks for empty steings, null, undefined, false, 0 and NaN
         usernameError = 1;
     }
-    if(password === "") {
+    if(!password) {
         passwordError = 1;
     }
-    if(schoolID === "") {
+    if(!schoolID) {
         schoolIDError = 1;
     }
 
-    if(schoolIDError !== 0 || usernameError !== 0 || passwordError !== 0) {
+    if(schoolIDError || usernameError || passwordError) {   //check if any error has a value besides 0
         return [schoolIDError, usernameError, passwordError, ""];
     }
 

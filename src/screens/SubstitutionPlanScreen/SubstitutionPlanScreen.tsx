@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Button, Modal, Switch } from "react-native";
+import { Switch } from "react-native";
 
 import {
   ScrollView,
@@ -21,6 +21,7 @@ import { fetchTimetable } from "../../services/api/fetchTimetable";
 import useAsyncStorage from "../../hooks/useAsyncStorage";
 import { getTeachers } from "../../services/parsing/getTeachers";
 import BasicModal from "../../components/BasicModal";
+import StorageProvider from "../../DataProvider/StorageProvider";
 
 enum SubstitutionSelection {
   FIRST,
@@ -64,10 +65,6 @@ export default function SubstitutionPlanScreen() {
   ] = fetchSubstitutionPlanEntriesWithDates();
 
   const [timetable, setTimetable] = useState([[]]);
-  const {
-    getData: getPersonalizedSubstitutionPlanEnabledInAsyncStorage,
-    storeData: storePersonalizedSubstitutionPlanEnabledInAsyncStorage,
-  } = useAsyncStorage("PersonalizedSubstitutionPlan");
 
   useEffect(() => {
     if (!isUserDataLoading) {
@@ -97,15 +94,20 @@ export default function SubstitutionPlanScreen() {
   }, []);
 
   const [isInitialTimetableChange, setInitialTimetableChange] = useState(true);
+  const {
+    getStoredSubstitutionPlanPersonalized,
+    storeSubstitutionPlanPersonalized,
+  } = StorageProvider();
 
   useEffect(() => {
     if (isInitialTimetableChange) {
       setInitialTimetableChange(false);
       return;
     }
-    getPersonalizedSubstitutionPlanEnabledInAsyncStorage().then(
-      (isPersonalizedSubstitutionPlanEnabledInAsyncStorage) => {
-        if (isPersonalizedSubstitutionPlanEnabledInAsyncStorage === "true") {
+    getStoredSubstitutionPlanPersonalized().then(
+      (isSubstitutionPlanPersonalized) => {
+        console.log(isSubstitutionPlanPersonalized);
+        if (isSubstitutionPlanPersonalized === "true") {
           setSubstitutionsPersonalized(false);
           togglePersonalizedSubstitutionPlan();
         }
@@ -115,20 +117,20 @@ export default function SubstitutionPlanScreen() {
 
   function togglePersonalizedSubstitutionPlan() {
     if (!areSubsitutionsPersonalized) {
-      storePersonalizedSubstitutionPlanEnabledInAsyncStorage("true");
+      storeSubstitutionPlanPersonalized(true);
       const filteredEntries = personalizeSubstitutionPlanEntries(
         timetable,
-        substitutionPlanEntries,
+        displayedEntries,
         sid
       );
 
       setDisplayedEntries([...filteredEntries]);
     } else {
-      storePersonalizedSubstitutionPlanEnabledInAsyncStorage("false");
+      storeSubstitutionPlanPersonalized(false);
       if (selectedSubstitutions === SubstitutionSelection.FIRST) {
-        setDisplayedEntries([...substitutionPlanEntriesOfFirstDate]);
+        setDisplayedEntries([...substitutions.first.entries]);
       } else {
-        setDisplayedEntries([...substitutionPlanEntriesOfSecondDate]);
+        setDisplayedEntries([...substitutions.second.entries]);
       }
     }
 
@@ -213,9 +215,7 @@ export default function SubstitutionPlanScreen() {
           </Text>
           <Switch
             style={styles.personalizedSubstitutionPlanSwitch}
-            onValueChange={(isSwitchOn) =>
-              setSubstitutionsPersonalized(isSwitchOn)
-            }
+            onValueChange={(isSwitchOn) => togglePersonalizedSubstitutionPlan()}
             value={areSubsitutionsPersonalized}
             thumbColor={areSubsitutionsPersonalized ? "#0061FF" : "white"}
             trackColor={{
