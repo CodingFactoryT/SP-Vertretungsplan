@@ -35,7 +35,6 @@ export default function StorageProvider() {
   }
 
   function storeSubstitutionPlanPersonalized(isSubstitutionPlanPersonalized: boolean) {
-    console.log(isSubstitutionPlanPersonalized);
     _storeSubstitutionPlanPersonalized(isSubstitutionPlanPersonalized.toString());
   }
 

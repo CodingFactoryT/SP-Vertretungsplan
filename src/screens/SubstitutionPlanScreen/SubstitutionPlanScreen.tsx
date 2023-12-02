@@ -106,7 +106,6 @@ export default function SubstitutionPlanScreen() {
     }
     getStoredSubstitutionPlanPersonalized().then(
       (isSubstitutionPlanPersonalized) => {
-        console.log(isSubstitutionPlanPersonalized);
         if (isSubstitutionPlanPersonalized === "true") {
           setSubstitutionsPersonalized(false);
           togglePersonalizedSubstitutionPlan();
