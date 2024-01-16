@@ -14,10 +14,9 @@ export function getTeachersWithSubjects(sid: string, timetable) {
       for (let column = 1; column < timetable[row].length; column++) {
         const lesson = timetable[row][column];
         if (lesson !== "") {
-          const subject = lesson.split(" ")[0]
+          const subject = lesson.split(" ")[0][0];
           const teacher = lesson.split(" ")[2];
-          //teachersWithSubjects.add(`${teacher}/${subject}`);
-          teachersWithSubjects.add(teacher);
+          teachersWithSubjects.add(`${teacher}/${subject}`);
         }
       }
     }

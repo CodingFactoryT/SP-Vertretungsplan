@@ -5,8 +5,8 @@ export default {
 
   userData: ["DEMO", "DEMO", "DEMO", "01.01.2000", "10", "10a", "DEMO"],
 
-  //teachersWithSubjects: ["DTO/Deutsch1", "BKL/Chemie1", "RSMBiologie1"],
-  teachersWithSubjects: ["DTO", "BKL", "RSM"],
+  teachersWithSubjects: ["DTO/D", "BKL/C", "RSM/B"],
+
   firstDateSubstitutionPlanEntries: [{
     description: "DEMO 1",
     lesson: "1 - 2",

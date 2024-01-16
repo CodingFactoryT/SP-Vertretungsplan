@@ -339,7 +339,7 @@ function personalizeSubstitutionPlanEntries(
 ) {
   const teachersWithSubjects = getTeachersWithSubjects(sid, timetable);
   const filteredEntries = substitutionPlanEntries.filter((element) => {
-    return teachersWithSubjects.has(element.originalTeacher);
+    return teachersWithSubjects.has(`${element.originalTeacher}/${element.originalSubject[0]}`);
   });
   return filteredEntries;
 }
