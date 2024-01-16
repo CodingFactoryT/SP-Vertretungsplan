@@ -1,11 +1,11 @@
 import DemoProvider from "../../DataProvider/DemoProvider";
 
-export function getTeachers(sid: string, timetable) {
-  let teachers = new Set();
-  
+export function getTeachersWithSubjects(sid: string, timetable) {
+  let teachersWithSubjects = new Set();
+
   if (sid === "DEMO") {
-    DemoProvider.teachers.forEach((teacher: string) => {
-      teachers.add(teacher);
+    DemoProvider.teachersWithSubjects.forEach((teacherWithSubjects: string) => {
+      teachersWithSubjects.add(teacherWithSubjects);
     });
   } else {
     for (let row = 0; row < timetable.length; row++) {
@@ -14,12 +14,14 @@ export function getTeachers(sid: string, timetable) {
       for (let column = 1; column < timetable[row].length; column++) {
         const lesson = timetable[row][column];
         if (lesson !== "") {
+          const subject = lesson.split(" ")[0]
           const teacher = lesson.split(" ")[2];
-          teachers.add(teacher);
+          //teachersWithSubjects.add(`${teacher}/${subject}`);
+          teachersWithSubjects.add(teacher);
         }
       }
     }
   }
 
-  return teachers;
+  return teachersWithSubjects;
 }

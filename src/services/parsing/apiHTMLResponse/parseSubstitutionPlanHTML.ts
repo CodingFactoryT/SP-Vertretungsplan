@@ -6,6 +6,11 @@ const DOMParser = require("react-native-html-parser");
 export default function parseSubstitutionPlanHTML(vertretungsplanHTML: string) {
   let firstDateFound = false;
 
+  vertretungsplanHTML = vertretungsplanHTML.replace(vertretungsplanHTML.substring(
+    vertretungsplanHTML.indexOf("<tbody>"),
+    vertretungsplanHTML.indexOf("</tbody>") + "</tbody>".length + 1
+  ), "");
+
   const firstDateVertretungen = vertretungsplanHTML.substring(
     vertretungsplanHTML.indexOf("<tbody>"),
     vertretungsplanHTML.indexOf("</tbody>") + "</tbody>".length + 1
@@ -19,7 +24,7 @@ export default function parseSubstitutionPlanHTML(vertretungsplanHTML: string) {
   );
   let firstDateEntries: ISubstitutionPlanEntry[] = parseSubstitutionPlanEntriesTable(firstDateVertretungen);
   let secondDateEntries: ISubstitutionPlanEntry[] = parseSubstitutionPlanEntriesTable(secondDateVetretungen);
-  
+
   const weekdays = [
     "Montag",
     "Dienstag",
@@ -33,7 +38,7 @@ export default function parseSubstitutionPlanHTML(vertretungsplanHTML: string) {
   let matches = striptags(vertretungsplanHTML).replace(/\s+/g, " ").matchAll(new RegExp(`(${weekdays.join("|")}),\\s+den\\s([\\d]{2}.[\\d]{2}.[\\d]{4})`, "g"));
   const firstDate = formatDate(matches.next().value[0]);
   const secondDate = formatDate(matches.next().value[0]);
-  
+
   return {
     firstDateValues: {
       date: firstDate,
@@ -51,7 +56,7 @@ function parseSubstitutionPlanEntriesTable(vertretungsHTML: string) {
   const tableData = parseHTMLTableBody(vertretungsHTML);
   const descriptions = getDescriptions(vertretungsHTML);
   tableData.forEach((substitutionEntry, index) => {
-    if(substitutionEntry.length !== 1) {  //if the length of the array is one, only the error that no substitutions are available is contained in the array
+    if (substitutionEntry.length !== 1) {  //if the length of the array is one, only the error that no substitutions are available is contained in the array
       entries.push({
         description: descriptions[index],
         lesson: substitutionEntry[1],
@@ -73,14 +78,14 @@ function parseSubstitutionPlanEntriesTable(vertretungsHTML: string) {
 
 function getDescriptions(vertretungsHTML: string) {
   const descriptions = [];
-  if(vertretungsHTML.startsWith("<") && vertretungsHTML.endsWith(">")) {
+  if (vertretungsHTML.startsWith("<") && vertretungsHTML.endsWith(">")) {
     const parser = new DOMParser.DOMParser();
     const parsed = parser.parseFromString(vertretungsHTML, "text/html");
     const tableRows = parsed.getElementsByTagName("tr");
     for (let i = 0; i < tableRows.length; i++) {
       let row = tableRows[i];
       const description = striptags(row.childNodes[1].getAttribute("title").trim());  //description is contained in the title instead of the textContent
-      
+
       descriptions.push(description);
     }
   }

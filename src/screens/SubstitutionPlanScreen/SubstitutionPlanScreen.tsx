@@ -19,7 +19,7 @@ import LoadingComponent from "../../components/LoadingComponent";
 import NoSubstitutionsEntry from "./components/NoSubstitutionsEntry";
 import { fetchTimetable } from "../../services/api/fetchTimetable";
 import useAsyncStorage from "../../hooks/useAsyncStorage";
-import { getTeachers } from "../../services/parsing/getTeachers";
+import { getTeachersWithSubjects } from "../../services/parsing/getTeachersWithSubjects";
 import BasicModal from "../../components/BasicModal";
 import StorageProvider from "../../DataProvider/StorageProvider";
 
@@ -63,7 +63,7 @@ export default function SubstitutionPlanScreen() {
     substitutionPlanEntriesOfSecondDate,
     areSubstitutionPlanEntriesLoading,
   ] = fetchSubstitutionPlanEntriesWithDates();
-
+  
   const [timetable, setTimetable] = useState([[]]);
 
   useEffect(() => {
@@ -337,10 +337,9 @@ function personalizeSubstitutionPlanEntries(
   substitutionPlanEntries: ISubstitutionPlanEntry[],
   sid: string
 ) {
-  const teachers = getTeachers(sid, timetable);
-
+  const teachersWithSubjects = getTeachersWithSubjects(sid, timetable);
   const filteredEntries = substitutionPlanEntries.filter((element) => {
-    return teachers.has(element.originalTeacher);
+    return teachersWithSubjects.has(element.originalTeacher);
   });
   return filteredEntries;
 }
