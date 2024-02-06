@@ -16,12 +16,18 @@ export default function parseSubstitutionPlanHTML(vertretungsplanHTML: string) {
     vertretungsplanHTML.indexOf("</tbody>") + "</tbody>".length + 1
   );
 
-  const cleanedHTML = vertretungsplanHTML.replace(firstDateVertretungen, "");
+  let cleanedHTML = vertretungsplanHTML.replace(firstDateVertretungen, "");
+
+  cleanedHTML = cleanedHTML.replace(cleanedHTML.substring(
+    cleanedHTML.indexOf("<tbody>"),
+    cleanedHTML.indexOf("</tbody>") + "</tbody>".length + 1
+  ), "");
 
   const secondDateVetretungen = cleanedHTML.substring(
     cleanedHTML.indexOf("<tbody>"),
     cleanedHTML.indexOf("</tbody") + "</tbody>".length + 1
   );
+
   let firstDateEntries: ISubstitutionPlanEntry[] = parseSubstitutionPlanEntriesTable(firstDateVertretungen);
   let secondDateEntries: ISubstitutionPlanEntry[] = parseSubstitutionPlanEntriesTable(secondDateVetretungen);
 
