@@ -8,7 +8,7 @@ export function getTeachersWithSubjects(sid: string, timetable) {
       teachersWithSubjects.add(teacherWithSubjects);
     });
   } else {
-    for (let row = 0; row < timetable.length; row++) {
+    for (let row = 1; row < timetable.length; row++) {
       //start at second column because first column is only description
 
       for (let column = 1; column < timetable[row].length; column++) {

@@ -1,17 +1,9 @@
 const DOMParser = require("react-native-html-parser");
 
-export default function parseHTMLTableBody(tableBodyHTML: string): string[][] {
-    tableBodyHTML = tableBodyHTML.trim();
-    if(!tableBodyHTML.startsWith("<tbody") || !tableBodyHTML.endsWith("</tbody>")) {
-        console.log("Table doesn't start with \"<tbody\" or doesn't end with \"</tbody>\"!");
-        return [];
-    }
-
+export default function parseHTMLTableBody(tableJSONData): string[][] {
     const tableData: string[][] = [];
-
-    const parser = new DOMParser.DOMParser();
-    const parsed = parser.parseFromString(tableBodyHTML, "text/html");
-    const tableRows = parsed.getElementsByTagName("tr");
+    const tableRows = tableJSONData.getElementsByTagName("tr");
+    
     for (let i = 0; i < tableRows.length; i++) {
         let row = tableRows[i];
         let rowData = [];
@@ -25,6 +17,5 @@ export default function parseHTMLTableBody(tableBodyHTML: string): string[][] {
         }
         tableData.push(rowData);
     }
-
     return tableData;
 }

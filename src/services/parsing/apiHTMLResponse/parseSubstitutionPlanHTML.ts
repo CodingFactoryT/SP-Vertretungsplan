@@ -3,68 +3,96 @@ import striptags from "striptags";
 import parseHTMLTableBody from "../../parseHTMLTableBody";
 const DOMParser = require("react-native-html-parser");
 
+const WEEKDAYS = [
+  "Montag",
+  "Dienstag",
+  "Mittwoch",
+  "Donnerstag",
+  "Freitag",
+  "Samstag",
+  "Sonntag",
+];
+
 export default function parseSubstitutionPlanHTML(vertretungsplanHTML: string) {
   let firstDateFound = false;
-  vertretungsplanHTML = vertretungsplanHTML.replace(vertretungsplanHTML.substring(
-    vertretungsplanHTML.indexOf("<tbody>"),
-    vertretungsplanHTML.indexOf("</tbody>") + "</tbody>".length + 1
-  ), "");
+  let dates: string[{original, formattedForDisplay, formattedForDate}] = [];
+  let index = 0;
+  const DATE_ID_IDENTIFIER = "id=\"tag"
+  while((index = vertretungsplanHTML.indexOf(DATE_ID_IDENTIFIER)) !== -1) {
+    const startingIndex = index + DATE_ID_IDENTIFIER.length;
+    const endingIndex = vertretungsplanHTML.indexOf("\"", startingIndex);
+    const date = vertretungsplanHTML.substring(startingIndex, endingIndex);
 
-  const firstDateVertretungen = vertretungsplanHTML.substring(
-    vertretungsplanHTML.indexOf("<tbody>"),
-    vertretungsplanHTML.indexOf("</tbody>") + "</tbody>".length + 1
-  );
-  console.log(firstDateVertretungen);
+    const dateFractions = /([0-9]+)_([0-9]+)_([0-9]+)/.exec(date);
+    const formattedForDate = `${dateFractions[3]}-${dateFractions[2]}-${dateFractions[1]}`;
 
-  let cleanedHTML = vertretungsplanHTML.replace(firstDateVertretungen, "");
+    const formattedForDisplay = WEEKDAYS[new Date("2024-02-22").getDay()] + ", den\n" + date.replaceAll("_", ".");
 
-  cleanedHTML = cleanedHTML.replace(cleanedHTML.substring(
-    cleanedHTML.indexOf("<tbody>"),
-    cleanedHTML.indexOf("</tbody>") + "</tbody>".length + 1
-  ), "");
+    dates.push({original: date, formattedForDisplay: formattedForDisplay, formattedForDate: formattedForDate});
 
-  const secondDateVetretungen = cleanedHTML.substring(
-    cleanedHTML.indexOf("<tbody>"),
-    cleanedHTML.indexOf("</tbody") + "</tbody>".length + 1
-  );
+    vertretungsplanHTML = vertretungsplanHTML.replaceAll(DATE_ID_IDENTIFIER + date + "\"", "");
+  }
 
-  let firstDateEntries: ISubstitutionPlanEntry[] = parseSubstitutionPlanEntriesTable(firstDateVertretungen);
-  let secondDateEntries: ISubstitutionPlanEntry[] = parseSubstitutionPlanEntriesTable(secondDateVetretungen);
+  switch(dates.length) {
+    case 0:
+      console.log("No date was found, which means that none of the substitution plans can be loaded!");
+      break;
+    case 1:
+      console.log("Only one date was found, which means that only one of the substitution plans can be loaded!");
+      break;
+    case 2:
+      console.log("All dates were found, which means that the substitution plans will be displayed correctly!");
+      break;
+    default:
+      console.log("All dates were found, but there are more available!");
+  }
 
-  const weekdays = [
-    "Montag",
-    "Dienstag",
-    "Mittwoch",
-    "Donnerstag",
-    "Freitag",
-    "Samstag",
-    "Sonntag",
-  ];
 
-  let matches = striptags(vertretungsplanHTML).replace(/\s+/g, " ").matchAll(new RegExp(`(${weekdays.join("|")}),\\s+den\\s([\\d]{2}.[\\d]{2}.[\\d]{4})`, "g"));
+  const parser = new DOMParser.DOMParser();
+  const document = parser.parseFromString(vertretungsplanHTML, "text/html");
+
+  let firstDateEntries: ISubstitutionPlanEntry[] = [];
+  let secondDateEntries: ISubstitutionPlanEntry[] = [];
+
+  if(dates.length >= 2) {
+    const secondDateVetretungen = parseHTMLTableBody(document.getElementById(`vtable${dates[1].original}`));
+    secondDateEntries = parseSubstitutionPlanEntriesTable(secondDateVetretungen);
+  } else if(dates.length >= 1) {
+    const firstDateVertretungen = parseHTMLTableBody(document.getElementById(`vtable${dates[0].original}`));
+    dates.push({original: null, formattedForDisplay: null, formattedForDate: null});
+    firstDateEntries = parseSubstitutionPlanEntriesTable(firstDateVertretungen);
+  } else {
+    dates.push({original: null, formattedForDisplay: null, formattedForDate: null});
+    dates.push({original: null, formattedForDisplay: null, formattedForDate: null});
+  }
+
+
+
+  /* let matches = striptags(vertretungsplanHTML).replace(/\s+/g, " ").matchAll(new RegExp(`(${weekdays.join("|")}),\\s+den\\s([\\d]{2}.[\\d]{2}.[\\d]{4})`, "g"));
   const firstDate = formatDate(matches.next().value[0]);
-  const secondDate = formatDate(matches.next().value[0]);
-
+  const secondDate = formatDate(matches.next().value[0]);  */
   return {
     firstDateValues: {
-      date: firstDate,
+      date: dates[0].formattedForDisplay,
       vertretungsplanEntries: firstDateEntries,
     },
     secondDateValues: {
-      date: secondDate,
+      date: dates[1].formattedForDisplay,
       vertretungsplanEntries: secondDateEntries,
     },
   };
 }
 
-function parseSubstitutionPlanEntriesTable(vertretungsHTML: string) {
+function parseSubstitutionPlanEntriesTable(vertretungsTableData) {
   const entries: ISubstitutionPlanEntry[] = [];
-  const tableData = parseHTMLTableBody(vertretungsHTML);
-  const descriptions = getDescriptions(vertretungsHTML);
-  tableData.forEach((substitutionEntry, index) => {
+  vertretungsTableData.forEach((substitutionEntry, index) => {
+    if(index === 0) {   //header of the table
+      return;
+    }
+
     if (substitutionEntry.length !== 1) {  //if the length of the array is one, only the error that no substitutions are available is contained in the array
       entries.push({
-        description: descriptions[index],
+        description: generateDescription(substitutionEntry),
         lesson: substitutionEntry[1],
         class: substitutionEntry[2],
         substitutionTeacher: substitutionEntry[3],
@@ -82,20 +110,8 @@ function parseSubstitutionPlanEntriesTable(vertretungsHTML: string) {
   return entries;
 }
 
-function getDescriptions(vertretungsHTML: string) {
-  const descriptions = [];
-  if (vertretungsHTML.startsWith("<") && vertretungsHTML.endsWith(">")) {
-    const parser = new DOMParser.DOMParser();
-    const parsed = parser.parseFromString(vertretungsHTML, "text/html");
-    const tableRows = parsed.getElementsByTagName("tr");
-    for (let i = 0; i < tableRows.length; i++) {
-      let row = tableRows[i];
-      const description = striptags(row.childNodes[1].getAttribute("title").trim());  //description is contained in the title instead of the textContent
-
-      descriptions.push(description);
-    }
-  }
-  return descriptions;
+function generateDescription(entry: string[]) {
+  return `${entry[1]},${entry[2]},${entry[2]},${entry[3]},${entry[4]},${entry[5]},${entry[6]},${entry[7]},${entry[8]},${entry[9]},${entry[10]}` ;
 }
 
 function formatDate(date: string) {

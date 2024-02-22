@@ -1,15 +1,15 @@
 import parseHTMLTableBody from "../../parseHTMLTableBody";
 import DemoProvider from "../../../DataProvider/DemoProvider";
+const DOMParser = require("react-native-html-parser");
 
 export default function parseUserDataHTML(userDataHTML: string, sid: string) {
-    const userDataTable = userDataHTML.substring(
-        userDataHTML.indexOf("<tbody>"),
-        userDataHTML.indexOf("</tbody>") + "</tbody>".length + 1
-    );
     if(sid === "DEMO") {
         return DemoProvider.userData;
     }
-    const tableData = parseHTMLTableBody(userDataTable);
+    const parser = new DOMParser.DOMParser();
+    const document = parser.parseFromString(userDataHTML, "text/html");
+    
+    const tableData = parseHTMLTableBody(document.getElementsByTagName("table")[0]);
 
     return [tableData[0][1], tableData[1][1], tableData[2][1], tableData[3][1], tableData[4][1], tableData[5][1], tableData[6][1]];
 }
