@@ -12,7 +12,6 @@ import { SIDContext, ThemeContext } from "../../contexts/Contexts";
 import LoadingComponent from "../../components/LoadingComponent";
 import NoSubstitutionsEntry from "./components/NoSubstitutionsEntry";
 import { fetchTimetable } from "../../services/api/fetchTimetable";
-import useAsyncStorage from "../../hooks/useAsyncStorage";
 import { getTeachersWithSubjects } from "../../services/parsing/getTeachersWithSubjects";
 import BasicModal from "../../components/BasicModal";
 import StorageProvider from "../../DataProvider/StorageProvider";
@@ -138,7 +137,7 @@ export default function SubstitutionPlanScreen() {
 			<View style={styles.container}>
 				<Text style={[styles.title, { color: fontColor }]}>{class_}-Vertretungsplan</Text>
 				<View style={styles.buttonContainer}>
-					{firstDate !== "---" && (
+					{firstDate !== null && (
 						<TouchableOpacity
 							style={styles.button}
 							onPress={() => {
@@ -148,7 +147,7 @@ export default function SubstitutionPlanScreen() {
 							<Text style={{ textAlign: "center" }}>{substitutions.first.date}</Text>
 						</TouchableOpacity>
 					)}
-					{secondDate !== "---" && (
+					{secondDate !== null && (
 						<TouchableOpacity
 							style={styles.button}
 							onPress={() => {
