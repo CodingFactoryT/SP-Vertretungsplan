@@ -5,7 +5,6 @@ const DOMParser = require("react-native-html-parser");
 
 export default function parseSubstitutionPlanHTML(vertretungsplanHTML: string) {
   let firstDateFound = false;
-
   vertretungsplanHTML = vertretungsplanHTML.replace(vertretungsplanHTML.substring(
     vertretungsplanHTML.indexOf("<tbody>"),
     vertretungsplanHTML.indexOf("</tbody>") + "</tbody>".length + 1
@@ -15,6 +14,7 @@ export default function parseSubstitutionPlanHTML(vertretungsplanHTML: string) {
     vertretungsplanHTML.indexOf("<tbody>"),
     vertretungsplanHTML.indexOf("</tbody>") + "</tbody>".length + 1
   );
+  console.log(firstDateVertretungen);
 
   let cleanedHTML = vertretungsplanHTML.replace(firstDateVertretungen, "");
 
