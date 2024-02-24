@@ -1,14 +1,25 @@
 import React from 'react';
 import useAsyncStorage from '../hooks/useAsyncStorage';
+import useSecureStorage from '../hooks/useSecureStorage';
 
 export default function StorageProvider() {
     
   const { getData: _getSchoolID, storeData: _storeSchoolID } =
-    useAsyncStorage("SchoolID");
+    useSecureStorage("SchoolIDSECURE");
   const { getData: _getUsername, storeData: _storeUsername } =
-    useAsyncStorage("LoginName");
+    useSecureStorage("LoginNameSECURE");
   const { getData: _getPassword, storeData: _storePassword } =
-    useAsyncStorage("LoginPassword");
+    useSecureStorage("LoginPasswordSECURE");
+
+
+  const { getData: _getSchoolIDDEPRECATED, storeData: _storeSchoolIDDEPRECATED } =
+    useAsyncStorage("SchoolID");
+  const { getData: _getUsernameDEPRECATED, storeData: _storeUsernameDEPRECATED } =
+    useAsyncStorage("LoginName");
+  const { getData: _getPasswordDEPRECATED, storeData: _storePasswordDEPRECATED } =
+    useAsyncStorage("LoginPassword");  
+
+
   const { getData: _getTheme, storeData: _storeTheme } = useAsyncStorage("Theme");
   const {
     getData: _getSubstitutionPlanPersonalized,
@@ -21,8 +32,18 @@ export default function StorageProvider() {
     _storePassword(password);
   }
 
+  function storeLoginDataDEPRECATED(schoolID: string, username: string, password: string) {
+    _storeSchoolIDDEPRECATED(schoolID);
+    _storeUsernameDEPRECATED(username);
+    _storePasswordDEPRECATED(password);
+  }
+
   function getLoginData() {
     return Promise.all([_getSchoolID(),_getUsername(),_getPassword()]);
+  }
+
+  function getLoginDataDEPRECATED() {
+    return Promise.all([_getSchoolIDDEPRECATED(),_getUsernameDEPRECATED(),_getPasswordDEPRECATED()]);
   }
 
   type Theme = "light" | "dark";
@@ -44,6 +65,8 @@ export default function StorageProvider() {
 
   return {
     storeLoginData,
+    storeLoginDataDEPRECATED,
+    getStoredLoginDataDEPRECATED: getLoginDataDEPRECATED,
     getStoredLoginData: getLoginData,
     storeTheme,
     getStoredTheme: getTheme,

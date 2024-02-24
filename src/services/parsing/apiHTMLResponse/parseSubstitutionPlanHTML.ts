@@ -4,13 +4,13 @@ import parseHTMLTableBody from "../../parseHTMLTableBody";
 const DOMParser = require("react-native-html-parser");
 
 const WEEKDAYS = [
+  "Sonntag",
   "Montag",
   "Dienstag",
   "Mittwoch",
   "Donnerstag",
   "Freitag",
   "Samstag",
-  "Sonntag",
 ];
 
 export default function parseSubstitutionPlanHTML(vertretungsplanHTML: string) {
@@ -26,7 +26,7 @@ export default function parseSubstitutionPlanHTML(vertretungsplanHTML: string) {
     const dateFractions = /([0-9]+)_([0-9]+)_([0-9]+)/.exec(date);
     const formattedForDate = `${dateFractions[3]}-${dateFractions[2]}-${dateFractions[1]}`;
 
-    const formattedForDisplay = WEEKDAYS[new Date("2024-02-22").getDay()] + ", den\n" + date.replaceAll("_", ".");
+    const formattedForDisplay = WEEKDAYS[new Date(formattedForDate).getDay()] + ", den\n" + date.replaceAll("_", ".");
 
     dates.push({original: date, formattedForDisplay: formattedForDisplay, formattedForDate: formattedForDate});
 
@@ -59,6 +59,7 @@ export default function parseSubstitutionPlanHTML(vertretungsplanHTML: string) {
     secondDateEntries = parseSubstitutionPlanEntriesTable(secondDateVetretungen);
   } else if(dates.length >= 1) {
     const firstDateVertretungen = parseHTMLTableBody(document.getElementById(`vtable${dates[0].original}`));
+    dates[0].formattedForDisplay = dates[0].formattedForDisplay.replaceAll("\n", " ");
     dates.push({original: null, formattedForDisplay: null, formattedForDate: null});
     firstDateEntries = parseSubstitutionPlanEntriesTable(firstDateVertretungen);
   } else {
