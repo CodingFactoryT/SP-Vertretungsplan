@@ -101,7 +101,7 @@ export default function LoginScreen({ route, navigation }: any) {
 				<TextInput placeholder="Nutzername" placeholderTextColor={fontColor} style={[styles.textInput, { color: fontColor, borderColor: usernameBorderColor }]} onChangeText={(text) => setUsernameText(text.trim())} value={usernameText} editable={areTextInputsEnabled} autoCapitalize="none" />
 				<PasswordInputToggableVisibilityComponent passwordBorderColor={passwordBorderColor} setPasswordText={setPasswordText} passwordText={passwordText} isEnabled={areTextInputsEnabled} />
 				<TouchableOpacity onPress={onLoginButtonPress} style={styles.loginButton}>
-					<Text>Login</Text>
+					<Text>Einloggen</Text>
 				</TouchableOpacity>
 				<View
 					style={{

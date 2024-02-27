@@ -26,7 +26,7 @@ export default function parseSubstitutionPlanHTML(vertretungsplanHTML: string) {
     const dateFractions = /([0-9]+)_([0-9]+)_([0-9]+)/.exec(date);
     const formattedForDate = `${dateFractions[3]}-${dateFractions[2]}-${dateFractions[1]}`;
 
-    const formattedForDisplay = WEEKDAYS[new Date(formattedForDate).getDay()] + ", den\n" + date.replaceAll("_", ".");
+    const formattedForDisplay = WEEKDAYS[new Date(formattedForDate).getDay()] + ",\n" + date.replaceAll("_", ".");
 
     dates.push({original: date, formattedForDisplay: formattedForDisplay, formattedForDate: formattedForDate});
 
@@ -55,23 +55,20 @@ export default function parseSubstitutionPlanHTML(vertretungsplanHTML: string) {
   let secondDateEntries: ISubstitutionPlanEntry[] = [];
 
   if(dates.length >= 2) {
+    const firstDateVetretungen = parseHTMLTableBody(document.getElementById(`vtable${dates[0].original}`));
+    firstDateEntries = parseSubstitutionPlanEntriesTable(firstDateVetretungen);
     const secondDateVetretungen = parseHTMLTableBody(document.getElementById(`vtable${dates[1].original}`));
     secondDateEntries = parseSubstitutionPlanEntriesTable(secondDateVetretungen);
   } else if(dates.length >= 1) {
     const firstDateVertretungen = parseHTMLTableBody(document.getElementById(`vtable${dates[0].original}`));
     dates[0].formattedForDisplay = dates[0].formattedForDisplay.replaceAll("\n", " ");
-    dates.push({original: null, formattedForDisplay: null, formattedForDate: null});
     firstDateEntries = parseSubstitutionPlanEntriesTable(firstDateVertretungen);
+    dates.push({original: null, formattedForDisplay: null, formattedForDate: null});
   } else {
     dates.push({original: null, formattedForDisplay: null, formattedForDate: null});
     dates.push({original: null, formattedForDisplay: null, formattedForDate: null});
   }
 
-
-
-  /* let matches = striptags(vertretungsplanHTML).replace(/\s+/g, " ").matchAll(new RegExp(`(${weekdays.join("|")}),\\s+den\\s([\\d]{2}.[\\d]{2}.[\\d]{4})`, "g"));
-  const firstDate = formatDate(matches.next().value[0]);
-  const secondDate = formatDate(matches.next().value[0]);  */
   return {
     firstDateValues: {
       date: dates[0].formattedForDisplay,
